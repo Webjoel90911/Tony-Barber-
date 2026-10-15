@@ -566,10 +566,9 @@
                 <li><a href="#precios">Precios</a></li>
                 <li><a href="#barberos">Barberos</a></li>
                 <li><a href="#cupos">Cupos</a></li>
-                <li><a href="#reservar">Reservar Cita</a></li>
                 <li><a href="#cortes">Estilos</a></li>
             </ul>
-            <a href="#reservar" class="btn-gold">
+            <a href="#cupos" class="btn-gold">
                 <i class="fa-brands fa-whatsapp"></i> Reservar
             </a>
         </div>
@@ -584,7 +583,7 @@
             <h1>No es solo un corte, <span>es tu experiencia.</span></h1>
             <p>Tu estilo, nuestra pasión. Cortes modernos, degradados profesionales y atención superior en Piura.</p>
             <div>
-                <a href="#reservar" class="btn-gold" style="padding: 0.8rem 2rem; font-size: 1.05rem;">
+                <a href="#cupos" class="btn-gold" style="padding: 0.8rem 2rem; font-size: 1.05rem;">
                     <i class="fa-solid fa-calendar-check"></i> Quiero reservar una cita
                 </a>
             </div>
@@ -729,52 +728,6 @@
         <div class="slots-grid"></div>
     </section>
 
-    <!-- Reservas WhatsApp -->
-    <section class="booking-section" id="reservar">
-        <h2 class="section-title">Quiero Reservar <span>una Cita</span></h2>
-        <div class="booking-box">
-            <p style="color: var(--text-muted); text-align: center; margin-bottom: 1.5rem;">Completa tus datos y haz clic en reservar para enviarlo directamente a nuestro WhatsApp (+51 906 576 897).</p>
-            
-            <div class="form-group">
-                <label>Tu Nombre:</label>
-                <input type="text" id="clientName" class="form-control" placeholder="Ej. Carlos Pérez">
-            </div>
-
-            <div class="form-group">
-                <label>Selecciona el Servicio:</label>
-                <select id="clientService" class="form-control">
-                    <option value="Corte Clásico">Corte Clásico - S/ 10</option>
-                    <option value="Corte Clásico Plus">Corte Clásico Plus - S/ 15</option>
-                    <option value="Degradado">Degradado - S/ 20</option>
-                    <option value="Degradado Plus">Degradado Plus - S/ 25</option>
-                    <option value="Premium">Premium - S/ 35</option>
-                    <option value="VIP">VIP - S/ 60</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Elige tu Barbero:</label>
-                <select id="clientBarber" class="form-control">
-                    <option value="Cualquiera disponible">Cualquiera disponible</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Fecha de la Cita:</label>
-                <input type="date" id="clientDate" class="form-control">
-            </div>
-
-            <div class="form-group">
-                <label>Hora:</label>
-                <input type="time" id="clientTime" class="form-control">
-            </div>
-
-            <button type="button" class="btn-gold" style="width: 100%; justify-content: center; padding: 1rem; margin-top: 1rem; font-size: 1.05rem;" onclick="sendWhatsAppBooking()">
-                <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> Quiero reservar una cita
-            </button>
-        </div>
-    </section>
-
     <!-- Galería de Cortes -->
     <section class="gallery-section" id="cortes">
         <h2 class="section-title">Nuestros <span>Trabajos y Estilos</span></h2>
@@ -813,34 +766,19 @@
 
 </div>
 
-<script src="site.js?v=2"></script>
+<script>document.write('<script src="site.js?'+Date.now()+'"><\/script>')</script>
 <script>
+    function wa(texto) {
+        const phone = window.PHONE || '51906576897';
+        window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(texto), '_blank');
+    }
+
     function setService(serviceName) {
-        document.getElementById('clientService').value = serviceName.split(' (')[0];
-        window.location.href = '#reservar';
+        wa('Hola, quiero reservar una cita para el servicio: ' + serviceName);
     }
 
     function selectBarber(name) {
-        document.getElementById('clientBarber').value = name;
-        window.location.href = '#reservar';
-    }
-
-    function sendWhatsAppBooking() {
-        const name = document.getElementById('clientName').value.trim();
-        const service = document.getElementById('clientService').value;
-        const barber = document.getElementById('clientBarber').value;
-        const date = document.getElementById('clientDate').value;
-        const time = document.getElementById('clientTime').value;
-
-        if (!name || !date || !time) {
-            alert('Por favor completa tu nombre, fecha y hora para realizar la reserva.');
-            return;
-        }
-
-        const phoneNumber = window.PHONE || '51906576897';
-        const message = `Hola, quiero reservar una cita.%0A%0A*Nombre:* ${encodeURIComponent(name)}%0A*Servicio:* ${encodeURIComponent(service)}%0A*Barbero:* ${encodeURIComponent(barber)}%0A*Fecha:* ${encodeURIComponent(date)}%0A*Hora:* ${encodeURIComponent(time)}`;
-        
-        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+        wa('Hola, quiero reservar una cita con ' + name + '.');
     }
 </script>
 </body>
