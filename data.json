@@ -1,0 +1,139 @@
+{
+  "contact": {
+    "phone": "51906576897",
+    "phoneText": "+51 906 576 897",
+    "address": "Av. Pachacútec transversal Avelino Cáceres #1233, Piura",
+    "tiktok": "https://www.tiktok.com/@anthonycv70?_r=1&_t=ZS-9AZ47TpRkzI",
+    "instagram": "https://instagram.com/antosbarber?dlrf=YmlyYnczbGl6OTEw",
+    "facebook": "https://www.facebook.com/share/19hb7Me33W/",
+    "hours1": "Lunes a Domingo: Atención continua",
+    "hours2": "Estilo y exclusividad garantizada"
+  },
+  "hero": {
+    "title1": "No es solo un corte,",
+    "title2": "es tu experiencia.",
+    "text": "Tu estilo, nuestra pasión. Cortes modernos, degradados profesionales y atención superior en Piura.",
+    "image": "581519.jpg"
+  },
+  "banners": [
+    "581523.jpg",
+    "581780.jpg",
+    "581782.jpg"
+  ],
+  "categories": [
+    {
+      "name": "Clásicos",
+      "icon": "fa-scissors",
+      "items": [
+        {
+          "name": "Corte Clásico",
+          "price": "10",
+          "badge": "",
+          "features": []
+        },
+        {
+          "name": "Corte Clásico Plus",
+          "price": "15",
+          "badge": "",
+          "features": [
+            "Corte clásico",
+            "Perfilado de cejas",
+            "Mascarilla facial"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Degradados",
+      "icon": "fa-disease",
+      "items": [
+        {
+          "name": "Degradado",
+          "price": "20",
+          "badge": "",
+          "features": []
+        },
+        {
+          "name": "Degradado Plus",
+          "price": "25",
+          "badge": "",
+          "features": [
+            "Corte degradado",
+            "Mascarilla facial",
+            "Masajeador (3 min)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Experiencias",
+      "icon": "fa-star",
+      "items": [
+        {
+          "name": "Premium",
+          "price": "35",
+          "badge": "PREMIUM",
+          "features": [
+            "Asesoramiento",
+            "Corte",
+            "Tarjeta de fidelidad",
+            "Masajeador (7 min)",
+            "Bebida de cortesía"
+          ]
+        },
+        {
+          "name": "VIP",
+          "price": "60",
+          "badge": "VIP",
+          "features": [
+            "Asesoramiento",
+            "Corte",
+            "Mascarilla LED",
+            "Masajeador (10 min)",
+            "Tarjeta de fidelidad",
+            "Bebida de cortesía",
+            "Peinado con secadora",
+            "Perfilado de cejas y barba"
+          ]
+        }
+      ]
+    }
+  ],
+  "barbers": [
+    {
+      "name": "Anthony Chiroque",
+      "role": "Líder / Master Barber",
+      "photo": "582213.jpg"
+    },
+    {
+      "name": "Jesús Inga",
+      "role": "Barbero",
+      "photo": "582214.jpg"
+    },
+    {
+      "name": "Fabio La Chira",
+      "role": "Barbero",
+      "photo": "582212.jpg"
+    }
+  ],
+  "gallery": [
+    "581786.jpg",
+    "581781.jpg",
+    "581784.jpg",
+    "581785.jpg",
+    "581777.jpg",
+    "581783.jpg"
+  ],
+  "slots": [
+    {
+      "date": "2026-10-16",
+      "times": [
+        "09:00",
+        "10:00",
+        "11:00",
+        "15:00",
+        "16:00"
+      ]
+    }
+  ]
+}

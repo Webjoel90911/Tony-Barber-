@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Forzar visualización de ordenador en móviles y tablets -->
+    <meta name="viewport" content="width=1200, initial-scale=1.0, user-scalable=yes">
+    <title>Anto's Barber | Style Lounge - Piura</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --gold-glow: rgba(212, 175, 55, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
+            --border-gold: rgba(212, 175, 55, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* Contenedor global estricto para forzar vista de PC en móviles */
+        html, body {
+            width: 1200px;
+            overflow-x: auto;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+        }
+
+        body {
+            line-height: 1.6;
+            margin: 0 auto;
+        }
+
+        .site-wrapper {
+            width: 1200px;
+            margin: 0 auto;
+            background-color: var(--bg-dark);
+        }
+
+        /* Header / Navbar */
+        header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1200px;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        .nav-container {
+            width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold), #aa8c2c);
+            color: #000;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 4px 15px var(--gold-glow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--gold-glow);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 140px 2rem 80px;
+            width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-content h1 span {
+            color: var(--gold);
+        }
+
+        .hero-content p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .badge-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--gold);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            border-top: 1px solid var(--border-gold);
+            border-right: 1px solid var(--border-gold);
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        .hero-banner-preview {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--border-gold);
+        }
+
+        .hero-banner-preview img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            height: 450px;
+        }
+
+        /* Sección de Banners */
+        .banners-section {
+            width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title span {
+            color: var(--gold);
+        }
+
+        .banners-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .banner-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-gold);
+            transition: transform 0.3s;
+        }
+
+        .banner-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .banner-card img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Precios y Servicios */
+        .services-section {
+            width: 1200px;
+            margin: 0 auto 5rem;
+            padding: 0 2rem;
+        }
+
+        .pricing-table-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .pricing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-gold);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .service-category-title {
+            color: var(--gold);
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid var(--border-gold);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .price-card {
+            background: rgba(20, 20, 20, 0.8);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-gold);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .price-card.featured {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        .price-card h3 {
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .prices-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .regular-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        .service-details {
+            list-style: none;
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        .service-details li {
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .service-details li i {
+            color: var(--gold);
+            font-size: 0.75rem;
+        }
+
+        /* Sección Barberos */
+        .barbers-section {
+            width: 1200px;
+            margin: 0 auto 5rem;
+            padding: 0 2rem;
+        }
+
+        .barbers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .barber-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+        .barber-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px var(--gold-glow);
+        }
+
+        .barber-img-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            border: 4px solid var(--gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        .barber-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        .barber-card:hover .barber-img-container img {
+            transform: scale(1.1);
+        }
+
+        .barber-info {
+            padding: 0.5rem 0 0;
+        }
+
+        .barber-card h3 {
+            font-size: 1.35rem;
+            color: var(--text-main);
+            margin-bottom: 0.3rem;
+        }
+
+        .barber-card .role {
+            color: var(--gold);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Sección Interactiva de Reservas */
+        .booking-section {
+            width: 1200px;
+            margin: 0 auto 5rem;
+            padding: 0 2rem;
+        }
+
+        .booking-box {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.9rem;
+            background: #0a0a0a;
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        /* Galería de Cortes */
+        .gallery-section {
+            width: 1200px;
+            margin: 0 auto 5rem;
+            padding: 0 2rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            border-radius: 14px;
+            overflow: hidden;
+            height: 320px;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-gold);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.08);
+        }
+
+        /* Footer */
+        footer {
+            width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-gold);
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-col h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            color: var(--gold);
+        }
+
+        .footer-col p, .footer-col a {
+            color: var(--text-muted);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+        }
+
+        .footer-col a:hover {
+            color: var(--gold-light);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            background: rgba(212, 175, 55, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            border: 1px solid var(--border-gold);
+            transition: background 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .footer-bottom {
+            width: 1100px;
+            margin: 0 auto;
+            text-align: center;
+            border-top: 1px solid var(--border-gold);
+            padding-top: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+<div class="site-wrapper">
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-scissors" style="color: var(--gold);"></i> ANTO'S <span>BARBER</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#promos">Promociones</a></li>
+                <li><a href="#precios">Precios</a></li>
+                <li><a href="#barberos">Barberos</a></li>
+                <li><a href="#reservar">Reservar Cita</a></li>
+                <li><a href="#cortes">Estilos</a></li>
+            </ul>
+            <a href="#reservar" class="btn-gold">
+                <i class="fa-brands fa-whatsapp"></i> Reservar
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="hero-content">
+            <div class="badge-info">
+                <i class="fa-solid fa-location-dot" style="color: var(--gold);"></i> Av. Pachacútec transversal Avelino Cáceres #1233, Piura
+            </div>
+            <h1>No es solo un corte, <span>es tu experiencia.</span></h1>
+            <p>Tu estilo, nuestra pasión. Cortes modernos, degradados profesionales y atención superior en Piura.</p>
+            <div>
+                <a href="#reservar" class="btn-gold" style="padding: 0.8rem 2rem; font-size: 1.05rem;">
+                    <i class="fa-solid fa-calendar-check"></i> Quiero reservar una cita
+                </a>
+            </div>
+        </div>
+        <div class="hero-banner-preview">
+            <img src="581519.jpg" alt="Anto's Barber Local">
+        </div>
+    </section>
+
+    <!-- Banners Principales -->
+    <section class="banners-section" id="promos">
+        <h2 class="section-title">Banners & <span>Promociones Especiales</span></h2>
+        <div class="banners-grid">
+            <div class="banner-card"><img src="581523.jpg" alt="Banner 1"></div>
+            <div class="banner-card"><img src="581780.jpg" alt="Banner 2"></div>
+            <div class="banner-card"><img src="581782.jpg" alt="Banner 3"></div>
+        </div>
+    </section>
+
+    <!-- Precios y Servicios -->
+    <section class="services-section" id="precios">
+        <h2 class="section-title">Carta de <span>Servicios</span></h2>
+        <div class="pricing-table-container">
+            <div class="pricing-header">
+                <div>
+                    <h3 style="font-size: 1.5rem; color: var(--gold);">Tarifas Oficiales</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Elige tu servicio o experiencia favorita.</p>
+                </div>
+                <div style="text-align: right; color: var(--gold); font-weight: 600;">
+                    <i class="fa-solid fa-crown"></i> Style Lounge
+                </div>
+            </div>
+
+            <!-- Clásicos -->
+            <div class="service-category-title"><i class="fa-solid fa-scissors"></i> Clásicos</div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <div>
+                        <h3>Corte Clásico</h3>
+                        <div class="prices-row">
+                            <span class="regular-price">S/ 10</span>
+                        </div>
+                    </div>
+                    <button class="btn-gold" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.5rem;" onclick="setService('Corte Clásico (S/10)')">Seleccionar</button>
+                </div>
+
+                <div class="price-card">
+                    <div>
+                        <h3>Corte Clásico Plus</h3>
+                        <div class="prices-row">
+                            <span class="regular-price">S/ 15</span>
+                        </div>
+                        <ul class="service-details">
+                            <li><i class="fa-solid fa-check"></i> Corte clásico</li>
+                            <li><i class="fa-solid fa-check"></i> Perfilado de cejas</li>
+                            <li><i class="fa-solid fa-check"></i> Mascarilla facial</li>
+                        </ul>
+                    </div>
+                    <button class="btn-gold" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.5rem;" onclick="setService('Corte Clásico Plus (S/15)')">Seleccionar</button>
+                </div>
+            </div>
+
+            <!-- Degradados -->
+            <div class="service-category-title"><i class="fa-solid fa-disease"></i> Degradados</div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <div>
+                        <h3>Degradado</h3>
+                        <div class="prices-row">
+                            <span class="regular-price">S/ 20</span>
+                        </div>
+                    </div>
+                    <button class="btn-gold" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.5rem;" onclick="setService('Degradado (S/20)')">Seleccionar</button>
+                </div>
+
+                <div class="price-card">
+                    <div>
+                        <h3>Degradado Plus</h3>
+                        <div class="prices-row">
+                            <span class="regular-price">S/ 25</span>
+                        </div>
+                        <ul class="service-details">
+                            <li><i class="fa-solid fa-check"></i> Corte degradado</li>
+                            <li><i class="fa-solid fa-check"></i> Mascarilla facial</li>
+                            <li><i class="fa-solid fa-check"></i> Masajeador (3 min)</li>
+                        </ul>
+                    </div>
+                    <button class="btn-gold" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.5rem;" onclick="setService('Degradado Plus (S/25)')">Seleccionar</button>
+                </div>
+            </div>
+
+            <!-- Experiencias VIP -->
+            <div class="service-category-title"><i class="fa-solid fa-star"></i> Experiencias</div>
+            <div class="pricing-grid">
+                <div class="price-card featured">
+                    <div style="position: absolute; top: 0; right: 0; background: var(--gold); color: #000; font-size: 0.7rem; padding: 3px 10px; border-bottom-left-radius: 8px; font-weight: 700;">PREMIUM</div>
+                    <div>
+                        <h3>PREMIUM</h3>
+                        <div class="prices-row">
+                            <span class="regular-price">S/ 35</span>
+                        </div>
+                        <ul class="service-details">
+                            <li><i class="fa-solid fa-check"></i> Asesoramiento</li>
+                            <li><i class="fa-solid fa-check"></i> Corte</li>
+                            <li><i class="fa-solid fa-check"></i> Tarjeta de fidelidad</li>
+                            <li><i class="fa-solid fa-check"></i> Masajeador (7 min)</li>
+                            <li><i class="fa-solid fa-check"></i> Bebida de cortesía</li>
+                        </ul>
+                    </div>
+                    <button class="btn-gold" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.5rem;" onclick="setService('Premium (S/35)')">Seleccionar</button>
+                </div>
+
+                <div class="price-card featured">
+                    <div style="position: absolute; top: 0; right: 0; background: var(--gold); color: #000; font-size: 0.7rem; padding: 3px 10px; border-bottom-left-radius: 8px; font-weight: 700;">VIP</div>
+                    <div>
+                        <h3>VIP</h3>
+                        <div class="prices-row">
+                            <span class="regular-price">S/ 60</span>
+                        </div>
+                        <ul class="service-details">
+                            <li><i class="fa-solid fa-check"></i> Asesoramiento</li>
+                            <li><i class="fa-solid fa-check"></i> Corte</li>
+                            <li><i class="fa-solid fa-check"></i> Mascarilla LED</li>
+                            <li><i class="fa-solid fa-check"></i> Masajeador (10 min)</li>
+                            <li><i class="fa-solid fa-check"></i> Tarjeta de fidelidad</li>
+                            <li><i class="fa-solid fa-check"></i> Bebida de cortesía</li>
+                            <li><i class="fa-solid fa-check"></i> Peinado con secadora</li>
+                            <li><i class="fa-solid fa-check"></i> Perfilado de cejas y barba</li>
+                        </ul>
+                    </div>
+                    <button class="btn-gold" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.5rem;" onclick="setService('VIP (S/60)')">Seleccionar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Barberos Directa en el HTML -->
+    <section class="barbers-section" id="barberos">
+        <h2 class="section-title">Nuestro <span>Equipo Profesional</span></h2>
+        <div class="barbers-grid">
+            <div class="barber-card">
+                <div class="barber-img-container">
+                    <img src="582213.jpg" alt="Anthony Chiroque">
+                </div>
+                <div class="barber-info">
+                    <h3>Anthony Chiroque</h3>
+                    <div class="role">Líder / Master Barber</div>
+                </div>
+            </div>
+
+            <div class="barber-card">
+                <div class="barber-img-container">
+                    <img src="582214.jpg" alt="Jesús Inga">
+                </div>
+                <div class="barber-info">
+                    <h3>Jesús Inga</h3>
+                    <div class="role">Barbero</div>
+                </div>
+            </div>
+
+            <div class="barber-card">
+                <div class="barber-img-container">
+                    <img src="582212.jpg" alt="Fabio La Chira">
+                </div>
+                <div class="barber-info">
+                    <h3>Fabio La Chira</h3>
+                    <div class="role">Barbero</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservas WhatsApp -->
+    <section class="booking-section" id="reservar">
+        <h2 class="section-title">Quiero Reservar <span>una Cita</span></h2>
+        <div class="booking-box">
+            <p style="color: var(--text-muted); text-align: center; margin-bottom: 1.5rem;">Completa tus datos y haz clic en reservar para enviarlo directamente a nuestro WhatsApp (+51 906 576 897).</p>
+            
+            <div class="form-group">
+                <label>Tu Nombre:</label>
+                <input type="text" id="clientName" class="form-control" placeholder="Ej. Carlos Pérez">
+            </div>
+
+            <div class="form-group">
+                <label>Selecciona el Servicio:</label>
+                <select id="clientService" class="form-control">
+                    <option value="Corte Clásico">Corte Clásico - S/ 10</option>
+                    <option value="Corte Clásico Plus">Corte Clásico Plus - S/ 15</option>
+                    <option value="Degradado">Degradado - S/ 20</option>
+                    <option value="Degradado Plus">Degradado Plus - S/ 25</option>
+                    <option value="Premium">Premium - S/ 35</option>
+                    <option value="VIP">VIP - S/ 60</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Fecha de la Cita:</label>
+                <input type="date" id="clientDate" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Hora:</label>
+                <input type="time" id="clientTime" class="form-control">
+            </div>
+
+            <button type="button" class="btn-gold" style="width: 100%; justify-content: center; padding: 1rem; margin-top: 1rem; font-size: 1.05rem;" onclick="sendWhatsAppBooking()">
+                <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> Quiero reservar una cita
+            </button>
+        </div>
+    </section>
+
+    <!-- Galería de Cortes -->
+    <section class="gallery-section" id="cortes">
+        <h2 class="section-title">Nuestros <span>Trabajos y Estilos</span></h2>
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="581786.jpg" alt="Corte 1"></div>
+            <div class="gallery-item"><img src="581781.jpg" alt="Corte 2"></div>
+            <div class="gallery-item"><img src="581784.jpg" alt="Corte 3"></div>
+            <div class="gallery-item"><img src="581785.jpg" alt="Corte 4"></div>
+            <div class="gallery-item"><img src="581777.jpg" alt="Corte 5"></div>
+            <div class="gallery-item"><img src="581783.jpg" alt="Corte 6"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4><i class="fa-solid fa-scissors" style="color: var(--gold);"></i> Anto's Barber Style Lounge</h4>
+                <p>Tu estilo, nossa pasión. Cortes modernos, degradados profesionales y atención superior en Piura.</p>
+                <div class="social-icons">
+                    <a href="https://www.tiktok.com/@anthonycv70?_r=1&_t=ZS-9AZ47TpRkzI" target="_blank" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://instagram.com/antosbarber?dlrf=YmlyYnczbGl6OTEw" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/share/19hb7Me33W/" target="_blank" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Ubicación y Contacto</h4>
+                <p><i class="fa-solid fa-location-dot" style="color: var(--gold);"></i> Av. Pachacútec transversal Avelino Cáceres #1233, Piura</p>
+                <p><i class="fa-solid fa-phone" style="color: var(--gold);"></i> Citas: +51 906 576 897</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Horarios</h4>
+                <p>Lunes a Domingo: Atención continua</p>
+                <p>Estilo y exclusividad garantizada</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Anto's Barber Style Lounge - Piura. Tema Oscuro y Dorado.</p>
+        </div>
+    </footer>
+
+</div>
+
+<script src="site.js"></script>
+<script>
+    function setService(serviceName) {
+        document.getElementById('clientService').value = serviceName.split(' (')[0];
+        window.location.href = '#reservar';
+    }
+
+    function sendWhatsAppBooking() {
+        const name = document.getElementById('clientName').value.trim();
+        const service = document.getElementById('clientService').value;
+        const date = document.getElementById('clientDate').value;
+        const time = document.getElementById('clientTime').value;
+
+        if (!name || !date || !time) {
+            alert('Por favor completa tu nombre, fecha y hora para realizar la reserva.');
+            return;
+        }
+
+        const phoneNumber = window.PHONE || '51906576897';
+        const message = `Hola, quiero reservar una cita.%0A%0A*Nombre:* ${encodeURIComponent(name)}%0A*Servicio:* ${encodeURIComponent(service)}%0A*Fecha:* ${encodeURIComponent(date)}%0A*Hora:* ${encodeURIComponent(time)}`;
+        
+        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    }
+</script>
+</body>
+</html>
+
