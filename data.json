@@ -116,7 +116,7 @@
       "name": "Fabio La Chira",
       "role": "Barbero",
       "photo": "img/mva59p2gbp3m.jpg",
-      "available": false
+      "available": true
     }
   ],
   "gallery": [
@@ -140,17 +140,21 @@
       "barber": "Anthony Chiroque"
     },
     {
-      "date": "2026-10-17",
+      "date": "2026-10-16",
       "times": [
-        "08:00"
+        "08:00",
+        "12:00",
+        "2:00"
       ],
       "barber": "Jesús Inga"
     },
     {
-      "barber": "",
-      "date": "",
+      "barber": "Fabio La Chira",
+      "date": "2026-10-16",
       "times": [
-        "07:00"
+        "8:00",
+        "4:00",
+        "5:00"
       ]
     }
   ]
