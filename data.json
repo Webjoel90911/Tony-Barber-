@@ -136,12 +136,21 @@
         "11:00",
         "15:00",
         "16:00"
-      ]
+      ],
+      "barber": "Anthony Chiroque"
     },
     {
       "date": "2026-10-17",
       "times": [
         "08:00"
+      ],
+      "barber": "Jesús Inga"
+    },
+    {
+      "barber": "",
+      "date": "",
+      "times": [
+        "07:00"
       ]
     }
   ]
