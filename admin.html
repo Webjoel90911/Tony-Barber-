@@ -28,7 +28,7 @@ async function save(){say('Guardando...');try{const j=await gh('data.json','PUT'
 const get=(p)=>p.split('.').reduce((o,k)=>o[k],D);
 function set(p,v){const k=p.split('.'),l=k.pop();k.reduce((o,x)=>o[x],D)[l]=v}
 const F=(l,p,t='input')=>{const v=get(p);return `<label>${l}</label>`+(t=='ta'?`<textarea rows="4" data-p="${p}" data-l="1">${esc(v.join('\n'))}</textarea>`:t=='area'?`<textarea rows="3" data-p="${p}">${esc(v)}</textarea>`:`<input data-p="${p}" value="${esc(v)}">`)};
-const I=(l,p)=>`<label>${l}</label><img src="${esc(get(p))}"><input type="file" accept="image/*" data-i="${p}">`;
+const I=(l,p)=>`<label>${l}</label>${get(p)?`<img src="${esc(get(p))}">`:'<small style="color:#777">Sin foto</small>'}<input type="file" accept="image/*" data-i="${p}">`;
 const X=(p)=>`<button class="d" onclick="del('${p}')">Eliminar</button>`;
 function render(){const c='contact.',h='hero.';
 $('ed').innerHTML=`<h2>Contacto</h2><div class="box">${F('WhatsApp (solo números, con 51)',c+'phone')}${F('Teléfono visible',c+'phoneText')}${F('Dirección',c+'address')}${F('TikTok (enlace)',c+'tiktok')}${F('Instagram (enlace)',c+'instagram')}${F('Facebook (enlace)',c+'facebook')}${F('Horario línea 1',c+'hours1')}${F('Horario línea 2',c+'hours2')}</div>
@@ -41,8 +41,7 @@ $('ed').innerHTML=`<h2>Contacto</h2><div class="box">${F('WhatsApp (solo número
 function add(p,v){get(p).push(v);render()}
 function del(p){if(!confirm('¿Eliminar?'))return;const k=p.split('.'),i=k.pop();get(k.join('.')).splice(+i,1);render()}
 $('ed').addEventListener('input',e=>{const t=e.target;if(t.dataset.p)set(t.dataset.p,t.dataset.c?t.value.split(',').map(s=>s.trim()).filter(Boolean):t.dataset.l?t.value.split('\n').map(s=>s.trim()).filter(Boolean):t.value)});
-$('ed').addEventListener('change',async e=>{const t=e.target,f=t.files&&t.files[0];if(!f||!t.dataset.i)return;say('Subiendo foto...');
-try{const b64=await new Promise(r=>{const x=new FileReader;x.onload=()=>r(x.result.split(',')[1]);x.readAsDataURL(f)});
-const path='img/'+Date.now()+'-'+f.name.replace(/[^\w.]/g,'_');await gh(path,'PUT',{message:'Foto subida desde panel',content:b64});
-set(t.dataset.i,path);say('Foto subida. Pulsa Guardar.');render()}catch(x){say('❌ '+x.message)}});
+function shrink(f){return new Promise((ok,no)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{const s=Math.min(1,1000/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*s);c.height=Math.round(i.height*s);c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.78))};i.onerror=no;i.src=u})}
+$('ed').addEventListener('change',async e=>{const t=e.target,f=t.files&&t.files[0];if(!f||!t.dataset.i)return;say('Procesando foto...');
+try{const y=scrollY;set(t.dataset.i,await shrink(f));render();scrollTo(0,y);say('✅ Foto lista. Pulsa Guardar y publicar.')}catch(x){say('❌ No se pudo leer esa foto, prueba con otra')}});
 </script></body></html>
