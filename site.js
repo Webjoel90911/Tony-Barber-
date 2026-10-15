@@ -24,4 +24,9 @@ const today=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString(
 const bs=$('#clientBarber');
 const fill=()=>{const who=bs.value,t=[...new Set((D.slots||[]).filter(x=>x.date==dt.value&&(who=='Cualquiera disponible'||!x.barber||x.barber==who)).flatMap(x=>x.times))].sort();tm.innerHTML=!dt.value?'<option value="">Elige primero una fecha</option>':t.length?'<option value="">Elige una hora</option>'+t.map(h=>`<option>${e(h)}</option>`).join(''):'<option value="">Sin cupos para este día</option>'};
 dt.addEventListener('change',fill);bs.addEventListener('change',fill);fill();
+const sg=$('.slots-grid'),days={};
+(D.slots||[]).filter(x=>x.date&&x.date>=today&&x.times&&x.times.length).forEach(x=>{if(x.barber&&D.barbers.some(b=>b.name==x.barber&&!av(b)))return;(days[x.date]=days[x.date]||[]).push(x)});
+const ds=Object.keys(days).sort();
+sg.innerHTML=ds.length?ds.map(d=>{const [y,m,n]=d.split('-'),t=new Date(y,m-1,n).toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'}).replace(/^./,c=>c.toUpperCase());return `<div class="slot-day"><h3><i class="fa-regular fa-calendar"></i> ${e(t)}</h3>${days[d].map(x=>`<div class="slot-row"><div class="slot-who"><i class="fa-solid fa-user"></i>${e(x.barber||'Cualquier barbero')}</div><div class="slot-chips">${[...x.times].sort().map(h=>`<button type="button" class="slot-chip" data-d="${e(d)}" data-b="${e(x.barber||'')}" data-h="${e(h)}">${e(h)}</button>`).join('')}</div></div>`).join('')}</div>`}).join(''):'<p class="slots-empty">Por ahora no hay cupos publicados. Escríbenos por WhatsApp y te ayudamos.</p>';
+sg.addEventListener('click',ev=>{const c=ev.target.closest('.slot-chip');if(!c)return;if(c.dataset.b)bs.value=c.dataset.b;dt.value=c.dataset.d;fill();tm.value=c.dataset.h;location.href='#reservar'});
 })();

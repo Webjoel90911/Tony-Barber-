@@ -433,6 +433,20 @@
             box-shadow: 0 0 10px var(--gold-glow);
         }
 
+        /* Cupos disponibles */
+        .slots-section { width: 1200px; margin: 0 auto 5rem; padding: 0 2rem; }
+        .slots-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .slot-day { background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 16px; padding: 1.5rem; }
+        .slot-day h3 { color: var(--gold); font-size: 1.15rem; margin-bottom: 1rem; }
+        .slot-row { margin-bottom: 1rem; }
+        .slot-row:last-child { margin-bottom: 0; }
+        .slot-who { color: var(--text-muted); font-size: .9rem; margin-bottom: .5rem; }
+        .slot-who i { color: var(--gold); margin-right: 6px; }
+        .slot-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+        .slot-chip { background: rgba(212,175,55,.1); color: var(--gold-light); border: 1px solid var(--border-gold); border-radius: 50px; padding: .35rem .9rem; font-size: .9rem; font-weight: 600; cursor: pointer; transition: background .2s, color .2s; }
+        .slot-chip:hover { background: var(--gold); color: #000; }
+        .slots-empty { grid-column: 1 / -1; text-align: center; color: var(--text-muted); }
+
         /* Galería de Cortes */
         .gallery-section {
             width: 1200px;
@@ -551,6 +565,7 @@
                 <li><a href="#promos">Promociones</a></li>
                 <li><a href="#precios">Precios</a></li>
                 <li><a href="#barberos">Barberos</a></li>
+                <li><a href="#cupos">Cupos</a></li>
                 <li><a href="#reservar">Reservar Cita</a></li>
                 <li><a href="#cortes">Estilos</a></li>
             </ul>
@@ -706,6 +721,12 @@
     <section class="barbers-section" id="barberos">
         <h2 class="section-title">Nuestro <span>Equipo Profesional</span></h2>
         <div class="barbers-grid"></div>
+    </section>
+
+    <!-- Cupos disponibles -->
+    <section class="slots-section" id="cupos">
+        <h2 class="section-title">Cupos <span>Disponibles</span></h2>
+        <div class="slots-grid"></div>
     </section>
 
     <!-- Reservas WhatsApp -->
