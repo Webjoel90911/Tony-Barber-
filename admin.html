@@ -9,20 +9,30 @@ img{max-width:110px;max-height:110px;border-radius:6px;display:block;margin:6px 
 #bar{position:sticky;top:0;background:#0a0a0acc;padding:8px 0;z-index:9}#msg{font-size:.9rem;margin-left:6px}
 </style></head><body>
 <h1>Panel Admin</h1>
-<div id="login" class="box"><p style="font-size:.9rem;color:#aaa">Se guarda solo en este navegador.</p>
+<div id="login" class="box" hidden><label>Contraseña</label><input id="pw" type="password" onkeydown="if(event.key=='Enter')enter()"><button onclick="enter()">Entrar</button></div>
+<div id="setup" class="box" hidden><p style="font-size:.9rem;color:#aaa">Configuración (una sola vez): se crea un archivo con tu token protegido por contraseña. Súbelo al repositorio como <b>admin-config.json</b>.</p>
 <label>Repositorio (usuario/repo)</label><input id="repo" placeholder="miusuario/antos-barber">
 <label>Rama</label><input id="branch" value="main">
 <label>Token de GitHub</label><input id="token" type="password" placeholder="github_pat_...">
-<button onclick="login()">Entrar</button></div>
+<label>Contraseña nueva (larga, mínimo 12 caracteres)</label><input id="pw2" type="password">
+<button onclick="setup()">Crear admin-config.json</button></div>
 <div id="app" hidden><div id="bar"><button onclick="save()">💾 Guardar y publicar</button><span id="msg"></span></div><div id="ed"></div></div>
 <script>
 let D,sha,cfg=JSON.parse(localStorage.cfg||'{}');
 const $=s=>document.getElementById(s),esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-['repo','branch','token'].forEach(k=>cfg[k]&&($(k).value=cfg[k]));
 const say=t=>$('msg').textContent=t;
 const gh=(p,m='GET',b)=>fetch(`https://api.github.com/repos/${cfg.repo}/contents/${p}`+(m=='GET'?'?ref='+cfg.branch+'&t='+Date.now():''),{method:m,headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github+json'},body:b&&JSON.stringify({...b,branch:cfg.branch})}).then(async r=>{const j=await r.json();if(!r.ok)throw new Error(j.message);return j});
-async function login(){cfg={repo:$('repo').value.trim(),branch:$('branch').value.trim()||'main',token:$('token').value.trim()};
-try{const j=await gh('data.json');sha=j.sha;D=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));localStorage.cfg=JSON.stringify(cfg);$('login').hidden=true;$('app').hidden=false;render()}catch(x){alert('No se pudo entrar: '+x.message)}}
+const te=new TextEncoder(),B=u=>btoa(String.fromCharCode(...new Uint8Array(u))),U=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function key(pw,salt){const m=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:300000,hash:'SHA-256'},m,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function setup(){const pw=$('pw2').value;if(pw.length<12)return alert('La contraseña debe tener al menos 12 caracteres');
+const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),k=await key(pw,salt);
+const c=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,te.encode($('token').value.trim()));
+const f={repo:$('repo').value.trim(),branch:$('branch').value.trim()||'main',salt:B(salt),iv:B(iv),data:B(c)};
+const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([JSON.stringify(f)],{type:'application/json'}));l.download='admin-config.json';l.click();alert('Listo. Sube admin-config.json a tu repositorio (junto a admin.html) y recarga esta página.')}
+let CF;fetch('admin-config.json?t='+Date.now()).then(r=>r.ok?r.json():null).then(j=>{CF=j;const s=!j||location.search.includes('setup');$('login').hidden=s;$('setup').hidden=!s}).catch(()=>$('setup').hidden=false);
+async function enter(){try{const k=await key($('pw').value,U(CF.salt)),t=await crypto.subtle.decrypt({name:'AES-GCM',iv:U(CF.iv)},k,U(CF.data));
+cfg={repo:CF.repo,branch:CF.branch,token:new TextDecoder().decode(t)};
+const j=await gh('data.json');sha=j.sha;D=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));$('login').hidden=true;$('app').hidden=false;render()}catch(x){alert('Contraseña incorrecta o error de conexión')}}
 async function save(){say('Guardando...');try{const j=await gh('data.json','PUT',{message:'Actualización desde panel admin',content:btoa(unescape(encodeURIComponent(JSON.stringify(D,null,2)))),sha});sha=j.content.sha;say('✅ Guardado. La web se actualiza en ~1 min.')}catch(x){say('❌ '+x.message)}}
 const get=(p)=>p.split('.').reduce((o,k)=>o[k],D);
 function set(p,v){const k=p.split('.'),l=k.pop();k.reduce((o,x)=>o[x],D)[l]=v}
