@@ -445,6 +445,8 @@
         .slot-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
         .slot-chip { background: rgba(212,175,55,.1); color: var(--gold-light); border: 1px solid var(--border-gold); border-radius: 50px; padding: .35rem .9rem; font-size: .9rem; font-weight: 600; cursor: pointer; transition: background .2s, color .2s; }
         .slot-chip:hover { background: var(--gold); color: #000; }
+        .slot-chip.active { background: var(--gold); color: #000; }
+        .slot-summary { text-align: center; color: var(--gold-light); font-weight: 600; margin-bottom: 1.2rem; padding: .8rem; border: 1px dashed var(--border-gold); border-radius: 10px; }
         .slots-empty { grid-column: 1 / -1; text-align: center; color: var(--text-muted); }
 
         /* Galería de Cortes */
@@ -565,7 +567,7 @@
                 <li><a href="#promos">Promociones</a></li>
                 <li><a href="#precios">Precios</a></li>
                 <li><a href="#barberos">Barberos</a></li>
-                <li><a href="#cupos">Cupos</a></li>
+                <li><a href="#cupos">Cupos y Reserva</a></li>
                 <li><a href="#cortes">Estilos</a></li>
             </ul>
             <a href="#cupos" class="btn-gold">
@@ -722,10 +724,38 @@
         <div class="barbers-grid"></div>
     </section>
 
-    <!-- Cupos disponibles -->
+    <!-- Cupos y reserva -->
     <section class="slots-section" id="cupos">
-        <h2 class="section-title">Cupos <span>Disponibles</span></h2>
+        <h2 class="section-title">Elige tu <span>Cupo y Reserva</span></h2>
+
+        <div class="booking-box" style="margin-bottom: 2rem;">
+            <p style="color: var(--text-muted); text-align: center; margin-bottom: 1.5rem;">1. Elige tu servicio o promoción y tu barbero. 2. Toca la hora que te convenga. 3. Pon tu nombre y reserva por WhatsApp.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Servicio / Promoción:</label>
+                    <select id="clientService" class="form-control"></select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Barbero:</label>
+                    <select id="clientBarber" class="form-control">
+                        <option value="Cualquiera disponible">Cualquiera disponible</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="slots-grid"></div>
+
+        <div class="booking-box" style="margin-top: 2rem;">
+            <div class="slot-summary" id="pickSummary">Toca una hora para elegir tu cupo.</div>
+            <div class="form-group">
+                <label>Tu Nombre:</label>
+                <input type="text" id="clientName" class="form-control" placeholder="Ej. Carlos Pérez">
+            </div>
+            <button type="button" class="btn-gold" style="width: 100%; justify-content: center; padding: 1rem; font-size: 1.05rem;" onclick="sendWhatsAppBooking()">
+                <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> Reservar por WhatsApp
+            </button>
+        </div>
     </section>
 
     <!-- Galería de Cortes -->
@@ -768,17 +798,16 @@
 
 <script>document.write('<script src="site.js?'+Date.now()+'"><\/script>')</script>
 <script>
-    function wa(texto) {
-        const phone = window.PHONE || '51906576897';
-        window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(texto), '_blank');
-    }
-
     function setService(serviceName) {
-        wa('Hola, quiero reservar una cita para el servicio: ' + serviceName);
+        document.getElementById('clientService').value = serviceName.split(' (')[0];
+        window.location.href = '#cupos';
     }
 
     function selectBarber(name) {
-        wa('Hola, quiero reservar una cita con ' + name + '.');
+        const b = document.getElementById('clientBarber');
+        b.value = name;
+        b.dispatchEvent(new Event('change'));
+        window.location.href = '#cupos';
     }
 </script>
 </body>
