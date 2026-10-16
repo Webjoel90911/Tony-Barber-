@@ -17,18 +17,22 @@ $('.gallery-grid').innerHTML=D.gallery.filter(Boolean).map((g,i)=>`<div class="g
 const ic='style="color: var(--gold);"';
 $('.footer-container').innerHTML=`<div class="footer-col"><h4><i class="fa-solid fa-scissors" ${ic}></i> Anto's Barber Style Lounge</h4><p>${e(D.hero.text)}</p><div class="social-icons"><a href="${e(c.tiktok)}" target="_blank"><i class="fa-brands fa-tiktok"></i></a><a href="${e(c.instagram)}" target="_blank"><i class="fa-brands fa-instagram"></i></a><a href="${e(c.facebook)}" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></div></div><div class="footer-col"><h4>Ubicación y Contacto</h4><p><i class="fa-solid fa-location-dot" ${ic}></i> ${e(c.address)}</p><p><i class="fa-solid fa-phone" ${ic}></i> Citas: ${e(c.phoneText)}</p></div><div class="footer-col"><h4>Horarios</h4><p>${e(c.hours1)}</p><p>${e(c.hours2)}</p></div>`;
 const bs=$('#clientBarber'),sv=$('#clientService'),sum=$('#pickSummary'),sg=$('.slots-grid');
-bs.innerHTML='<option value="Cualquiera disponible">Cualquiera disponible</option>'+D.barbers.map(b=>`<option value="${e(b.name)}"${av(b)?'':' disabled'}>${e(b.name)}${av(b)?'':' (no disponible)'}</option>`).join('');
 sv.innerHTML=D.categories.flatMap(k=>k.items).map(i=>`<option value="${e(i.name)}">${e(i.name)} - S/ ${e(i.price)}</option>`).join('');
 const today=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
 const fmt=d=>{const [y,m,n]=d.split('-');return new Date(y,m-1,n).toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'}).replace(/^./,c=>c.toUpperCase())};
+const hhmm=()=>{const n=new Date();return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')};
+const libres=x=>(x.times||[]).filter(h=>x.date!=today||h.padStart(5,'0')>hhmm());
+const vivos=x=>x.date&&x.date>=today&&libres(x).length&&!(x.barber&&D.barbers.some(b=>b.name==x.barber&&!av(b)));
+const cuenta=n=>(D.slots||[]).filter(x=>vivos(x)&&(!x.barber||x.barber==n)).reduce((t,x)=>t+libres(x).length,0);
+bs.innerHTML='<option value="Cualquiera disponible">Cualquiera disponible</option>'+D.barbers.map(b=>{const n=cuenta(b.name);return `<option value="${e(b.name)}"${av(b)?'':' disabled'}>${e(b.name)}${av(b)?(n?` (${n} ${n==1?"cupo":"cupos"})`:' (sin cupos)'):' (no disponible)'}</option>`}).join('');
 let sel=null;
 const showSel=()=>{sum.textContent=sel?`✔ ${fmt(sel.d)} a las ${sel.h} · ${sel.b||bs.value}`:'Toca una hora para elegir tu cupo.'};
 const draw=()=>{sel=null;showSel();const who=bs.value,days={};
-(D.slots||[]).filter(x=>x.date&&x.date>=today&&x.times&&x.times.length).forEach(x=>{if(x.barber&&D.barbers.some(b=>b.name==x.barber&&!av(b)))return;if(who!='Cualquiera disponible'&&x.barber&&x.barber!=who)return;(days[x.date]=days[x.date]||[]).push(x)});
+(D.slots||[]).filter(vivos).forEach(x=>{if(who!='Cualquiera disponible'&&x.barber&&x.barber!=who)return;(days[x.date]=days[x.date]||[]).push(x)});
 const ds=Object.keys(days).sort();
-sg.innerHTML=ds.length?ds.map(d=>`<div class="slot-day"><h3><i class="fa-regular fa-calendar"></i> ${e(fmt(d))}</h3>${days[d].map(x=>`<div class="slot-row"><div class="slot-who"><i class="fa-solid fa-user"></i>${e(x.barber||(who=='Cualquiera disponible'?'Cualquier barbero':who))}</div><div class="slot-chips">${[...x.times].sort().map(h=>`<button type="button" class="slot-chip" data-d="${e(d)}" data-b="${e(x.barber||'')}" data-h="${e(h)}">${e(h)}</button>`).join('')}</div></div>`).join('')}</div>`).join(''):'<p class="slots-empty">No hay cupos publicados para esta elección. Prueba con otro barbero o escríbenos por WhatsApp.</p>'};
+sg.innerHTML=ds.length?ds.map(d=>`<div class="slot-day"><h3><i class="fa-regular fa-calendar"></i> ${e(fmt(d))}</h3>${days[d].map(x=>`<div class="slot-row"><div class="slot-who"><i class="fa-solid fa-user"></i>${e(x.barber||(who=='Cualquiera disponible'?'Cualquier barbero':who))}</div><div class="slot-chips">${libres(x).sort().map(h=>`<button type="button" class="slot-chip" data-d="${e(d)}" data-b="${e(x.barber||'')}" data-h="${e(h)}">${e(h)}</button>`).join('')}</div></div>`).join('')}</div>`).join(''):'<p class="slots-empty">No hay cupos publicados para esta elección. Prueba con otro barbero o escríbenos por WhatsApp.</p>'};
 bs.addEventListener('change',draw);draw();
-sg.addEventListener('click',ev=>{const c=ev.target.closest('.slot-chip');if(!c)return;sg.querySelectorAll('.slot-chip.active').forEach(x=>x.classList.remove('active'));c.classList.add('active');sel={d:c.dataset.d,h:c.dataset.h,b:c.dataset.b};showSel()});
+sg.addEventListener('click',ev=>{const c=ev.target.closest('.slot-chip');if(!c)return;sg.querySelectorAll('.slot-chip.active').forEach(x=>x.classList.remove('active'));c.classList.add('active');sel={d:c.dataset.d,h:c.dataset.h,b:c.dataset.b};if(sel.b)bs.value=sel.b;showSel()});
 window.sendWhatsAppBooking=()=>{const name=$('#clientName').value.trim();if(!sel){alert('Primero toca la hora que quieres en los cupos.');return}if(!name){alert('Por favor escribe tu nombre.');return}
 const barber=sel.b||bs.value,msg=`Hola, quiero reservar una cita.\n\n*Nombre:* ${name}\n*Servicio:* ${sv.value}\n*Barbero:* ${barber}\n*Fecha:* ${fmt(sel.d)}\n*Hora:* ${sel.h}`;
 window.open('https://wa.me/'+(window.PHONE||'51906576897')+'?text='+encodeURIComponent(msg),'_blank')};
