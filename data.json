@@ -29,14 +29,16 @@
           "name": "Corte Clásico",
           "price": "10",
           "badge": "",
-          "features": []
+          "features": [
+            "Escolares"
+          ]
         },
         {
           "name": "Corte Clásico Plus",
           "price": "15",
           "badge": "",
           "features": [
-            "Corte clásico",
+            "Corte clásico normal y en capas",
             "Perfilado de cejas",
             "Mascarilla facial"
           ]
@@ -88,6 +90,7 @@
           "features": [
             "Asesoramiento",
             "Corte",
+            "Limpieza facial profunda",
             "Mascarilla LED",
             "Masajeador (10 min)",
             "Tarjeta de fidelidad",
@@ -129,13 +132,13 @@
   ],
   "slots": [
     {
-      "date": "2026-10-16",
+      "date": "2026-10-21",
       "times": [
-        "09:00",
-        "10:00",
-        "11:00",
-        "15:00",
-        "16:00"
+        "16:00",
+        "17:00",
+        "18:00",
+        "19:00",
+        "20:00"
       ]
     }
   ]
