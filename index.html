@@ -2,8 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- Forzar visualización de ordenador en móviles y tablets -->
-    <meta name="viewport" content="width=1200, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anto's Barber | Style Lounge - Piura</title>
     <meta name="description" content="Anto's Barber Style Lounge en Piura: cortes modernos, degradados profesionales y atención superior. Reserva tu cita por WhatsApp.">
     <meta name="robots" content="index, follow">
@@ -70,8 +69,8 @@
 
         /* Contenedor global estricto para forzar vista de PC en móviles */
         html, body {
-            width: 1200px;
-            overflow-x: auto;
+            width: 100%;
+            overflow-x: hidden;
             background-color: var(--bg-dark);
             color: var(--text-main);
         }
@@ -82,7 +81,8 @@
         }
 
         .site-wrapper {
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
             background-color: var(--bg-dark);
         }
@@ -94,13 +94,14 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 1200px;
+            width: 100%;
             z-index: 1000;
             border-bottom: 1px solid var(--border-gold);
         }
 
         .nav-container {
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -164,7 +165,8 @@
         /* Hero Section */
         .hero {
             padding: 140px 2rem 80px;
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -221,7 +223,8 @@
 
         /* Sección de Banners */
         .banners-section {
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto 4rem;
             padding: 0 2rem;
         }
@@ -264,7 +267,8 @@
 
         /* Precios y Servicios */
         .services-section {
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto 5rem;
             padding: 0 2rem;
         }
@@ -362,7 +366,8 @@
 
         /* Sección Barberos */
         .barbers-section {
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto 5rem;
             padding: 0 2rem;
         }
@@ -430,7 +435,8 @@
 
         /* Sección Interactiva de Reservas */
         .booking-section {
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto 5rem;
             padding: 0 2rem;
         }
@@ -473,7 +479,8 @@
         }
 
         /* Cupos disponibles */
-        .slots-section { width: 1200px; margin: 0 auto 5rem; padding: 0 2rem; }
+        .slots-section { width: 100%;
+            max-width: 1200px; margin: 0 auto 5rem; padding: 0 2rem; }
         .slots-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
         .slot-day { background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 16px; padding: 1.5rem; }
         .slot-day h3 { color: var(--gold); font-size: 1.15rem; margin-bottom: 1rem; }
@@ -490,7 +497,8 @@
 
         /* Galería de Cortes */
         .gallery-section {
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto 5rem;
             padding: 0 2rem;
         }
@@ -523,7 +531,8 @@
 
         /* Footer */
         footer {
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
             background: var(--bg-card);
             border-top: 1px solid var(--border-gold);
@@ -531,7 +540,8 @@
         }
 
         .footer-container {
-            width: 1100px;
+            width: 100%;
+            max-width: 1100px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -582,13 +592,47 @@
         }
 
         .footer-bottom {
-            width: 1100px;
+            width: 100%;
+            max-width: 1100px;
             margin: 0 auto;
             text-align: center;
             border-top: 1px solid var(--border-gold);
             padding-top: 1.5rem;
             color: var(--text-muted);
             font-size: 0.85rem;
+        }
+
+        /* ===== Versión móvil ===== */
+        img { max-width: 100%; }
+        @media (max-width: 900px) {
+            .nav-container { padding: 0.8rem 1rem; }
+            .nav-links { display: none; }
+            .logo { font-size: 1rem; }
+            .btn-gold { padding: 0.5rem 1rem; font-size: 0.9rem; }
+
+            .hero { grid-template-columns: 1fr; padding: 100px 1rem 40px; gap: 1.5rem; }
+            .hero-content h1 { font-size: 2rem; }
+            .hero-content p { font-size: 1rem; }
+            .hero-banner-preview img { height: 260px; }
+
+            .banners-section, .services-section, .barbers-section,
+            .booking-section, .slots-section, .gallery-section { padding: 0 1rem; margin-bottom: 3rem; }
+            .section-title { font-size: 1.5rem; margin-bottom: 1.5rem; }
+
+            .banners-grid, .barbers-grid, .gallery-grid { grid-template-columns: 1fr; gap: 1.2rem; }
+            .banner-card img { height: auto; max-height: 480px; }
+            .gallery-item { height: 280px; }
+
+            .pricing-table-container { padding: 1.2rem; }
+            .pricing-header { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+            .pricing-grid { grid-template-columns: 1fr; }
+
+            .slots-grid { grid-template-columns: 1fr; }
+            .booking-box { padding: 1.2rem; }
+            .booking-selects { grid-template-columns: 1fr !important; }
+
+            footer { padding: 2.5rem 1rem 1.5rem; }
+            .footer-container { grid-template-columns: 1fr; gap: 1.8rem; }
         }
     </style>
 </head>
@@ -769,7 +813,7 @@
 
         <div class="booking-box" style="margin-bottom: 2rem;">
             <p style="color: var(--text-muted); text-align: center; margin-bottom: 1.5rem;">1. Elige tu servicio o promoción y tu barbero. 2. Toca la hora que te convenga. 3. Pon tu nombre y reserva por WhatsApp.</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+            <div class="booking-selects" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
                 <div class="form-group" style="margin-bottom: 0;">
                     <label>Servicio / Promoción:</label>
                     <select id="clientService" class="form-control"></select>
