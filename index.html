@@ -7,6 +7,19 @@
     <meta name="description" content="Anto's Barber Style Lounge en Piura: cortes modernos, degradados profesionales y atención superior. Reserva tu cita por WhatsApp.">
     <meta name="robots" content="index, follow">
     <meta name="keywords" content="Antos Barber, Anto's Barber, Tony Barber, barbería Piura, barbería en Piura, cortes de cabello Piura, degradado Piura">
+    <meta name="color-scheme" content="dark light">
+    <script>
+        (function () {
+            try {
+                var mq = window.matchMedia('(prefers-color-scheme: light)');
+                var apply = function () { document.documentElement.setAttribute('data-theme', mq.matches ? 'light' : 'dark'); };
+                apply();
+                if (mq.addEventListener) mq.addEventListener('change', apply);
+                else if (mq.addListener) mq.addListener(apply);
+                localStorage.removeItem('theme');
+            } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+        })();
+    </script>
     <meta name="application-name" content="Anto's Barber">
     <meta property="og:site_name" content="Anto's Barber">
     <meta property="og:title" content="Anto's Barber | Style Lounge - Piura">
@@ -61,7 +74,35 @@
             --border-gold: rgba(212, 175, 55, 0.2);
             --radius: 14px;
             --pad-x: max(2rem, calc((100% - 1200px) / 2 + 2rem));
+            --header-bg: rgba(10, 10, 10, 0.92);
+            --shadow: rgba(0, 0, 0, 0.7);
+            --ok: #4ade80;
+            --bad: #f87171;
+            color-scheme: dark;
         }
+
+        :root[data-theme="light"] {
+            --bg-dark: #f7f3ea;
+            --bg-card: #ffffff;
+            --gold: #a8841c;
+            --gold-light: #6f5410;
+            --gold-glow: rgba(168, 132, 28, 0.28);
+            --text-main: #1a1a1a;
+            --text-muted: #5a5a5a;
+            --border-gold: rgba(168, 132, 28, 0.35);
+            --header-bg: rgba(247, 243, 234, 0.92);
+            --shadow: rgba(60, 45, 10, 0.22);
+            --ok: #15803d;
+            --bad: #b91c1c;
+            color-scheme: light;
+        }
+
+        body, header, .banners-section, .services-section, .barbers-section,
+        .slots-section, .gallery-section, .price-card, .booking-box, .slot-day,
+        .barber-card, .banner-card, footer, .form-control {
+            transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+        }
+
 
         * {
             margin: 0;
@@ -97,7 +138,7 @@
 
         /* ---------- Header ---------- */
         header {
-            background: rgba(10, 10, 10, 0.92);
+            background: var(--header-bg);
             backdrop-filter: blur(12px);
             position: fixed;
             top: 0;
@@ -324,7 +365,7 @@
         .hero-banner-preview {
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 24px 48px var(--shadow);
             border: 1px solid var(--border-gold);
         }
 
@@ -546,7 +587,7 @@
             background: var(--bg-dark);
             border: 1px solid var(--border-gold);
             border-radius: 10px;
-            color: white;
+            color: var(--text-main);
             font-size: 1rem;
         }
 
