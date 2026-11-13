@@ -173,7 +173,7 @@
   /* ---------- Footer ---------- */
   const li = (cls, t) => `<i class="${cls}"></i>${e(t)}`;
   $('#foot').innerHTML = `
-    <div><a href="#inicio" class="logo"><i class="fa-solid fa-scissors"></i><span><small>ANTO'S</small><strong>BARBER</strong></span></a>
+    <div><a href="#inicio" class="logo"><img src="logo.png" alt="Anto's Barber Style Lounge" class="logo-img"></a>
       <p>${e(H.text || '')}</p>
       <div class="social">
         ${c.tiktok ? `<a href="${e(c.tiktok)}" target="_blank" rel="noopener" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>` : ''}

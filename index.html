@@ -70,9 +70,10 @@ button{cursor:pointer;font-family:inherit}
 
 /* ---------- Header ---------- */
 header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem var(--pad)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.6rem var(--pad)}
 .logo{display:flex;align-items:center;gap:.7rem}
-.logo i{color:var(--gold);font-size:1.7rem;transform:rotate(-20deg)}
+.logo-img{height:60px;width:60px;border-radius:8px;display:block;object-fit:cover}
+.foot .logo-img{height:84px;width:84px}
 .logo span{display:flex;flex-direction:column;line-height:1.1}
 .logo small{font-size:.62rem;letter-spacing:.22em;color:var(--text)}
 .logo strong{font-family:'Playfair Display',serif;font-weight:500;font-size:1.35rem;letter-spacing:.02em}
@@ -257,7 +258,7 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
 <body>
 <header>
   <div class="nav">
-    <a href="#inicio" class="logo"><i class="fa-solid fa-scissors"></i><span><small>ANTO'S</small><strong>BARBER</strong></span></a>
+    <a href="#inicio" class="logo"><img src="logo.png" alt="Anto's Barber Style Lounge" class="logo-img"></a>
     <ul class="nav-links">
       <li><a href="#inicio" class="active">Inicio</a></li>
       <li><a href="#servicios">Servicios</a></li>
