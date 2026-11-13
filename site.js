@@ -1,40 +1,193 @@
-(async()=>{
-const $=s=>document.querySelector(s),e=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let D;try{D=await (await fetch('data.json?'+Date.now())).json()}catch(x){return}
-const c=D.contact;window.PHONE=c.phone;
-$('.badge-info').innerHTML=`<i class="fa-solid fa-location-dot" style="color: var(--gold);"></i> ${e(c.address)}`;
-$('.hero-content h1').innerHTML=`${e(D.hero.title1)} <span>${e(D.hero.title2)}</span>`;
-$('.hero-content p').textContent=D.hero.text;
-const hb=$('.hero-banner-preview');D.hero.image?(hb.querySelector('img').src=D.hero.image):(hb.style.display='none',$('.hero').classList.add('no-img'));
-$('.banners-grid').innerHTML=D.banners.filter(Boolean).map((b,i)=>`<div class="banner-card"><img src="${e(b)}" alt="Banner ${i+1}"></div>`).join('');
-$('.banners-section').style.display=D.banners.some(Boolean)?'':'none';$('.gallery-section').style.display=D.gallery.some(Boolean)?'':'none';
-const wa=$('#ctaWhatsapp');if(wa&&c.phone)wa.href='https://wa.me/'+c.phone;
-const box=$('.pricing-table-container');box.querySelectorAll('.service-category-title,.pricing-grid').forEach(n=>n.remove());
-const btn='style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.5rem;"';
-box.insertAdjacentHTML('beforeend',D.categories.map(k=>`<div class="service-category-title"><i class="fa-solid ${e(k.icon)}"></i> ${e(k.name)}</div><div class="pricing-grid">${k.items.map(i=>`<div class="price-card${i.badge?' featured':''}">${i.badge?`<div class="price-tag">${e(i.badge)}</div>`:''}<div><h3>${e(i.name)}</h3><div class="prices-row"><span class="regular-price">S/ ${e(i.price)}</span></div>${i.features.length?`<ul class="service-details">${i.features.map(f=>`<li><i class="fa-solid fa-check"></i> ${e(f)}</li>`).join('')}</ul>`:''}</div><button class="btn-gold" ${btn} onclick="setService(this.dataset.s)" data-s="${e(i.name)} (S/${e(i.price)})">Seleccionar</button></div>`).join('')}</div>`).join(''));
-const av=b=>b.available!==false;
-$('.barbers-grid').innerHTML=D.barbers.map(b=>`<div class="barber-card"><div class="barber-img-container">${b.photo?`<img src="${e(b.photo)}" alt="${e(b.name)}">`:'<i class="fa-solid fa-user" style="font-size:5rem;color:var(--gold);line-height:192px"></i>'}</div><div class="barber-info"><h3>${e(b.name)}</h3><div class="role">${e(b.role)}</div><div style="font-size:.85rem;margin:.6rem 0;font-weight:600;color:${av(b)?'var(--ok)':'var(--bad)'}"><i class="fa-solid fa-circle" style="font-size:.5rem;vertical-align:middle"></i> ${av(b)?'Disponible':'No disponible'}</div>${av(b)?`<button class="btn-gold" style="font-size:.85rem;padding:.4rem 1rem;" onclick="selectBarber(this.dataset.b)" data-b="${e(b.name)}">Elegir Barbero</button>`:''}</div></div>`).join('');
-$('.gallery-grid').innerHTML=D.gallery.filter(Boolean).map((g,i)=>`<div class="gallery-item"><img src="${e(g)}" alt="Corte ${i+1}"></div>`).join('');
-const ic='style="color: var(--gold);"';
-$('.footer-container').innerHTML=`<div class="footer-col"><h4><i class="fa-solid fa-scissors" ${ic}></i> Anto's Barber Style Lounge</h4><p>${e(D.hero.text)}</p><div class="social-icons"><a href="${e(c.tiktok)}" target="_blank"><i class="fa-brands fa-tiktok"></i></a><a href="${e(c.instagram)}" target="_blank"><i class="fa-brands fa-instagram"></i></a><a href="${e(c.facebook)}" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></div></div><div class="footer-col"><h4>Ubicación y Contacto</h4><p><i class="fa-solid fa-location-dot" ${ic}></i> ${e(c.address)}</p><p><i class="fa-solid fa-phone" ${ic}></i> Citas: ${e(c.phoneText)}</p></div><div class="footer-col"><h4>Horarios</h4><p>${e(c.hours1)}</p><p>${e(c.hours2)}</p></div>`;
-const bs=$('#clientBarber'),sv=$('#clientService'),sum=$('#pickSummary'),sg=$('.slots-grid');
-sv.innerHTML=D.categories.flatMap(k=>k.items).map(i=>`<option value="${e(i.name)}">${e(i.name)} - S/ ${e(i.price)}</option>`).join('');
-const today=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
-const fmt=d=>{const [y,m,n]=d.split('-');return new Date(y,m-1,n).toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'}).replace(/^./,c=>c.toUpperCase())};
-const hhmm=()=>{const n=new Date();return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')};
-const libres=x=>(x.times||[]).filter(h=>x.date!=today||h.padStart(5,'0')>hhmm());
-const vivos=x=>x.date&&x.date>=today&&libres(x).length&&!(x.barber&&D.barbers.some(b=>b.name==x.barber&&!av(b)));
-const cuenta=n=>(D.slots||[]).filter(x=>vivos(x)&&(!x.barber||x.barber==n)).reduce((t,x)=>t+libres(x).length,0);
-bs.innerHTML='<option value="Cualquiera disponible">Cualquiera disponible</option>'+D.barbers.map(b=>{const n=cuenta(b.name);return `<option value="${e(b.name)}"${av(b)?'':' disabled'}>${e(b.name)}${av(b)?(n?` (${n} ${n==1?"cupo":"cupos"})`:' (sin cupos)'):' (no disponible)'}</option>`}).join('');
-let sel=null;
-const showSel=()=>{sum.textContent=sel?`✔ ${fmt(sel.d)} a las ${sel.h} · ${sel.b||bs.value}`:'Toca una hora para elegir tu cupo.'};
-const draw=()=>{sel=null;showSel();const who=bs.value,days={};
-(D.slots||[]).filter(vivos).forEach(x=>{if(who!='Cualquiera disponible'&&x.barber&&x.barber!=who)return;(days[x.date]=days[x.date]||[]).push(x)});
-const ds=Object.keys(days).sort();
-sg.innerHTML=ds.length?ds.map(d=>`<div class="slot-day"><h3><i class="fa-regular fa-calendar"></i> ${e(fmt(d))}</h3>${days[d].map(x=>`<div class="slot-row"><div class="slot-who"><i class="fa-solid fa-user"></i>${e(x.barber||(who=='Cualquiera disponible'?'Cualquier barbero':who))}</div><div class="slot-chips">${libres(x).sort().map(h=>`<button type="button" class="slot-chip" data-d="${e(d)}" data-b="${e(x.barber||'')}" data-h="${e(h)}">${e(h)}</button>`).join('')}</div></div>`).join('')}</div>`).join(''):'<p class="slots-empty">No hay cupos publicados para esta elección. Prueba con otro barbero o escríbenos por WhatsApp.</p>'};
-bs.addEventListener('change',draw);draw();
-sg.addEventListener('click',ev=>{const c=ev.target.closest('.slot-chip');if(!c)return;sg.querySelectorAll('.slot-chip.active').forEach(x=>x.classList.remove('active'));c.classList.add('active');sel={d:c.dataset.d,h:c.dataset.h,b:c.dataset.b};if(sel.b)bs.value=sel.b;showSel()});
-window.sendWhatsAppBooking=()=>{const name=$('#clientName').value.trim();if(!sel){alert('Primero toca la hora que quieres en los cupos.');return}if(!name){alert('Por favor escribe tu nombre.');return}
-const barber=sel.b||bs.value,msg=`Hola, quiero reservar una cita.\n\n*Nombre:* ${name}\n*Servicio:* ${sv.value}\n*Barbero:* ${barber}\n*Fecha:* ${fmt(sel.d)}\n*Hora:* ${sel.h}`;
-window.open('https://wa.me/'+(window.PHONE||'51906576897')+'?text='+encodeURIComponent(msg),'_blank')};
+(async () => {
+  const $ = s => document.querySelector(s);
+  const e = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  let D;
+  try { D = await (await fetch('data.json?' + Date.now())).json(); } catch (x) { return; }
+  D.slots = D.slots || [];
+  const c = D.contact || {};
+  const PHONE = c.phone || '51906576897';
+
+  /* ---------- Fechas ---------- */
+  const pad = n => String(n).padStart(2, '0');
+  const key = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const now = new Date();
+  const today = key(now);
+  const hhmm = () => pad(now.getHours()) + ':' + pad(now.getMinutes());
+  const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const DIAS = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
+  const parse = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+  const fmt = k => {
+    const d = parse(k);
+    return `${['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'][d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`;
+  };
+
+  /* ---------- Textos de la portada y contacto ---------- */
+  const H = D.hero || {};
+  $('#heroTitle').innerHTML = `${e(H.title1)} <span>${e(H.title2)}</span>`;
+  $('#heroText').textContent = H.text || '';
+  $('#heroAddr').textContent = c.address || '';
+  $('#hoursTxt').textContent = c.hours1 || '';
+  const heroImg = $('.hero-img img');
+  if (H.image) heroImg.src = H.image; else $('.hero').classList.add('no-img');
+
+  /* ---------- Banners y galería ---------- */
+  const bans = (D.banners || []).filter(Boolean);
+  $('#banners').innerHTML = bans.map((b, i) => `<div><img src="${e(b)}" alt="Promoción ${i + 1}" loading="lazy" onerror="this.parentNode.remove()"></div>`).join('');
+  $('#promos').style.display = bans.length ? '' : 'none';
+  const gal = (D.gallery || []).filter(Boolean);
+  $('#gallery').innerHTML = gal.map((g, i) => `<div><img src="${e(g)}" alt="Corte ${i + 1}" loading="lazy" onerror="this.parentNode.remove()"></div>`).join('');
+  $('#galeria').style.display = gal.length ? '' : 'none';
+
+  /* ---------- Estado ---------- */
+  const services = (D.categories || []).flatMap(k => k.items.map(i => ({ ...i, cat: k.name })));
+  const av = b => b.available !== false;
+  const barbers = D.barbers || [];
+  const st = { svc: services[0] || null, who: '', date: '', time: '', timeBarber: '', y: now.getFullYear(), m: now.getMonth() };
+
+  /* ---------- Disponibilidad ---------- */
+  const libres = x => (x.times || []).filter(h => x.date !== today || h.padStart(5, '0') > hhmm());
+  const vivo = x => x.date && x.date >= today && libres(x).length && !(x.barber && barbers.some(b => b.name === x.barber && !av(b)));
+  const aplica = (x, who) => !who || !x.barber || x.barber === who;
+  const slotsOf = who => D.slots.filter(x => vivo(x) && aplica(x, who));
+  const cuenta = n => slotsOf(n).reduce((t, x) => t + libres(x).length, 0);
+  // fecha -> { hora: barbero }
+  const byDate = who => {
+    const out = {};
+    slotsOf(who).forEach(x => libres(x).forEach(h => {
+      const o = out[x.date] = out[x.date] || {};
+      const hh = h.padStart(5, '0');
+      if (!(hh in o)) o[hh] = x.barber || '';
+    }));
+    return out;
+  };
+
+  /* ---------- Servicios ---------- */
+  const svcList = $('#svcList');
+  const drawSvc = () => {
+    let last = '';
+    svcList.innerHTML = services.map((s, i) => {
+      const head = s.cat !== last ? `<div class="svc-cat">${e(s.cat)}</div>` : '';
+      last = s.cat;
+      const sel = st.svc === s;
+      return `${head}<button type="button" class="opt${sel ? ' sel' : ''}" data-i="${i}"><span><span class="t">${e(s.name)}</span><span class="p">S/ ${e(s.price)}</span>${s.features && s.features.length ? `<span class="f">${e(s.features.join(' · '))}</span>` : ''}</span><span class="radio"><i class="fa-solid fa-check"></i></span></button>`;
+    }).join('');
+  };
+  svcList.addEventListener('click', ev => {
+    const b = ev.target.closest('.opt'); if (!b) return;
+    st.svc = services[+b.dataset.i]; drawSvc(); summary();
+  });
+
+  /* ---------- Barberos ---------- */
+  const barList = $('#barberList');
+  const drawBar = () => {
+    const card = (name, sub, photo, ok, sel, who) => `<button type="button" class="opt${sel ? ' sel' : ''}${ok ? '' : ' off'}" data-w="${e(who)}" ${ok ? '' : 'disabled'}><span class="barber"><span class="avatar">${photo ? `<img src="${e(photo)}" alt="" onerror="this.remove()">` : '<i class="fa-solid fa-user"></i>'}</span><span><span class="t">${e(name)}</span><span class="p">${sub}</span></span></span><span class="radio"><i class="fa-solid fa-check"></i></span></button>`;
+    const any = cuenta('');
+    barList.innerHTML =
+      card('Cualquiera disponible', any ? `<span class="cnt">${any} ${any === 1 ? 'cupo' : 'cupos'}</span>` : 'Sin cupos', '', true, st.who === '', '').replace('<i class="fa-solid fa-user"></i>', '<i class="fa-solid fa-users"></i>') +
+      barbers.map(b => {
+        const n = cuenta(b.name);
+        const sub = av(b) ? `${e(b.role || 'Barbero')} · <span class="cnt">${n ? `${n} ${n === 1 ? 'cupo' : 'cupos'}` : 'sin cupos'}</span>` : 'No disponible';
+        return card(b.name, sub, b.photo, av(b), st.who === b.name, b.name);
+      }).join('');
+  };
+  barList.addEventListener('click', ev => {
+    const b = ev.target.closest('.opt'); if (!b || b.disabled) return;
+    st.who = b.dataset.w; st.time = ''; st.timeBarber = '';
+    if (st.date && !byDate(st.who)[st.date]) st.date = '';
+    drawBar(); drawCal(); drawTimes(); summary();
+  });
+
+  /* ---------- Calendario ---------- */
+  const calGrid = $('#calGrid');
+  const drawCal = () => {
+    const av2 = byDate(st.who);
+    $('#calTitle').textContent = `${MESES[st.m]} ${st.y}`;
+    const first = new Date(st.y, st.m, 1), days = new Date(st.y, st.m + 1, 0).getDate();
+    const ym = `${st.y}-${pad(st.m + 1)}`;
+    const nowYM = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+    const lastKey = Object.keys(av2).sort().pop() || today;
+    $('#calPrev').disabled = ym <= nowYM;
+    $('#calNext').disabled = ym >= lastKey.slice(0, 7);
+    let h = DIAS.map(d => `<div class="dow">${d}</div>`).join('');
+    for (let i = 0; i < first.getDay(); i++) h += '<div></div>';
+    for (let d = 1; d <= days; d++) {
+      const k = `${ym}-${pad(d)}`, has = !!av2[k];
+      h += `<button type="button" class="day${has ? ' has' : ''}${k === st.date ? ' sel' : ''}${k === today ? ' today' : ''}" ${has ? `data-d="${k}"` : 'disabled'}>${d}</button>`;
+    }
+    calGrid.innerHTML = h;
+  };
+  calGrid.addEventListener('click', ev => {
+    const b = ev.target.closest('.day.has'); if (!b) return;
+    st.date = b.dataset.d; st.time = ''; st.timeBarber = '';
+    drawCal(); drawTimes(); summary();
+  });
+  $('#calPrev').onclick = () => { st.m--; if (st.m < 0) { st.m = 11; st.y--; } drawCal(); };
+  $('#calNext').onclick = () => { st.m++; if (st.m > 11) { st.m = 0; st.y++; } drawCal(); };
+
+  /* ---------- Horas ---------- */
+  const timeList = $('#timeList');
+  const drawTimes = () => {
+    const hs = st.date ? byDate(st.who)[st.date] : null;
+    if (!hs) { timeList.innerHTML = '<p class="empty">Elige un día marcado con punto dorado.</p>'; return; }
+    timeList.innerHTML = Object.keys(hs).sort().map(h => `<button type="button" class="time${h === st.time ? ' sel' : ''}" data-h="${h}" data-b="${e(hs[h])}">${h}</button>`).join('');
+  };
+  timeList.addEventListener('click', ev => {
+    const b = ev.target.closest('.time'); if (!b) return;
+    st.time = b.dataset.h; st.timeBarber = b.dataset.b; drawTimes(); summary();
+  });
+
+  /* ---------- Resumen y pasos ---------- */
+  const steps = [...document.querySelectorAll('#stepper .step')];
+  const name = $('#clientName');
+  const barberName = () => st.who || st.timeBarber || 'Cualquiera disponible';
+  function summary() {
+    const set = (id, v, empty) => { const el = $(id); el.textContent = v || empty; el.className = v ? '' : 'empty-v'; };
+    $('#sSvc').innerHTML = st.svc ? `<span>${e(st.svc.name)}</span><span>S/ ${e(st.svc.price)}</span>` : '—';
+    set('#sBar', st.time ? barberName() : (st.who || 'Cualquiera disponible'), '—');
+    set('#sDate', st.date ? fmt(st.date) : '', 'Elige una fecha');
+    set('#sTime', st.time, 'Elige una hora');
+    $('#sTotal').textContent = st.svc ? `S/ ${st.svc.price}` : 'S/ 0';
+    const done = [!!st.svc, true, !!(st.date && st.time), !!(st.date && st.time && name.value.trim())];
+    const act = done.indexOf(false);
+    steps.forEach((s, i) => { s.classList.toggle('done', done[i] && i !== act); s.classList.toggle('active', i === act); });
+  }
+  name.addEventListener('input', summary);
+
+  $('#confirmBtn').onclick = () => {
+    if (!st.svc) { alert('Elige un servicio.'); return; }
+    if (!st.date || !st.time) { alert('Elige el día y la hora de tu cita.'); return; }
+    const n = name.value.trim();
+    if (!n) { alert('Por favor escribe tu nombre.'); name.focus(); return; }
+    const msg = `Hola, quiero reservar una cita.\n\n*Nombre:* ${n}\n*Servicio:* ${st.svc.name} (S/${st.svc.price})\n*Barbero:* ${barberName()}\n*Fecha:* ${fmt(st.date)}\n*Hora:* ${st.time}`;
+    window.open('https://wa.me/' + PHONE + '?text=' + encodeURIComponent(msg), '_blank');
+  };
+
+  /* ---------- Carta de servicios ---------- */
+  $('#carta').innerHTML = services.map((s, i) => `<div class="card-s">${s.badge ? `<span class="tag">${e(s.badge)}</span>` : ''}<span class="cat">${e(s.cat)}</span><h3>${e(s.name)}</h3><div class="pr">S/ ${e(s.price)}</div>${s.features && s.features.length ? `<ul>${s.features.map(f => `<li><i class="fa-solid fa-check"></i>${e(f)}</li>`).join('')}</ul>` : '<ul></ul>'}<a href="#agenda" class="btn-outline-gold" data-i="${i}">Reservar</a></div>`).join('');
+  $('#carta').addEventListener('click', ev => {
+    const a = ev.target.closest('a[data-i]'); if (!a) return;
+    st.svc = services[+a.dataset.i]; drawSvc(); summary();
+  });
+
+  /* ---------- Footer ---------- */
+  const li = (cls, t) => `<i class="${cls}"></i>${e(t)}`;
+  $('#foot').innerHTML = `
+    <div><a href="#inicio" class="logo"><i class="fa-solid fa-scissors"></i><span><small>ANTO'S</small><strong>BARBER</strong></span></a>
+      <p>${e(H.text || '')}</p>
+      <div class="social">
+        ${c.tiktok ? `<a href="${e(c.tiktok)}" target="_blank" rel="noopener" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>` : ''}
+        ${c.instagram ? `<a href="${e(c.instagram)}" target="_blank" rel="noopener" title="Instagram"><i class="fa-brands fa-instagram"></i></a>` : ''}
+        ${c.facebook ? `<a href="${e(c.facebook)}" target="_blank" rel="noopener" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>` : ''}
+        <a href="https://wa.me/${e(PHONE)}" target="_blank" rel="noopener" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+      </div></div>
+    <div><h4>Navegación</h4><ul><li><a href="#inicio">Inicio</a></li><li><a href="#servicios">Servicios</a></li><li><a href="#agenda">Barberos</a></li><li><a href="#galeria">Galería</a></li><li><a href="#contacto">Contacto</a></li></ul></div>
+    <div><h4>Servicios</h4><ul>${services.slice(0, 5).map(s => `<li><a href="#servicios">${e(s.name)}</a></li>`).join('')}</ul></div>
+    <div><h4>Contacto</h4><ul><li>${li('fa-solid fa-phone', c.phoneText || '')}</li><li>${li('fa-solid fa-location-dot', c.address || '')}</li></ul></div>
+    <div><h4>Horario de atención</h4><p>${e(c.hours1 || '')}</p><p>${e(c.hours2 || '')}</p></div>`;
+
+  /* ---------- Inicio ---------- */
+  const first = Object.keys(byDate('')).sort()[0];
+  if (first) { const d = parse(first); st.y = d.getFullYear(); st.m = d.getMonth(); }
+  drawSvc(); drawBar(); drawCal(); drawTimes(); summary();
 })();

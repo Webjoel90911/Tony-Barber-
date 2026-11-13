@@ -9,6 +9,7 @@ label{display:block;font-size:.8rem;color:#aaa;margin:8px 0 3px}input,textarea,s
 button{background:var(--g);color:#000;border:0;border-radius:6px;padding:9px 14px;font-weight:700;margin:6px 6px 0 0}button.d{background:#7a1f1f;color:#fff}
 img{max-width:110px;max-height:110px;border-radius:6px;display:block;margin:6px 0}
 #bar{position:sticky;top:0;background:#0a0a0acc;padding:8px 0;z-index:9}#msg{font-size:.9rem;margin-left:6px}
+.chk{display:inline-flex;align-items:center;gap:4px;margin:6px 12px 0 0;color:#fff;font-size:.9rem}.chk input{width:auto}.g2,.g3{display:grid;gap:8px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}details summary{padding:4px 0}
 </style></head><body>
 <h1>Panel Admin</h1>
 <div id="login" class="box" hidden><p style="font-size:.9rem;color:#aaa">Solo la primera vez. Después entra solo en este dispositivo.</p>
@@ -24,7 +25,7 @@ const say=t=>$('msg').textContent=t;
 const PV={};
 const gh=(p,m='GET',b,raw)=>fetch(`https://api.github.com/repos/${cfg.repo}/contents/${p}`+(m=='GET'?'?ref='+cfg.branch+'&t='+Date.now():''),{method:m,headers:{Authorization:'Bearer '+cfg.token,Accept:raw?'application/vnd.github.raw+json':'application/vnd.github+json'},body:b&&JSON.stringify({...b,branch:cfg.branch})}).then(async r=>{if(!r.ok){let j={};try{j=await r.json()}catch(_){}throw new Error(j.message||('Error '+r.status))}return raw?r.text():r.json()});
 async function login(auto){if(!auto)cfg={repo:$('repo').value.trim(),branch:$('branch').value.trim()||'main',token:$('token').value.trim()};
-try{const dir=await gh('');sha=dir.find(f=>f.name=='data.json').sha;D=JSON.parse(await gh('data.json','GET',null,true));D.barbers.forEach(b=>{if(b.available===undefined)b.available=true});localStorage.cfg=JSON.stringify(cfg);$('login').hidden=true;$('app').hidden=false;render()}catch(x){$('login').hidden=false;if(!auto)alert('No se pudo entrar: '+x.message)}}
+try{const dir=await gh('');sha=dir.find(f=>f.name=='data.json').sha;D=JSON.parse(await gh('data.json','GET',null,true));D.barbers.forEach(b=>{if(b.available===undefined)b.available=true});D.slots=D.slots||[];sortSlots();localStorage.cfg=JSON.stringify(cfg);$('login').hidden=true;$('app').hidden=false;render()}catch(x){$('login').hidden=false;if(!auto)alert('No se pudo entrar: '+x.message)}}
 function logout(){localStorage.removeItem('cfg');location.reload()}
 if(cfg.token)login(true);else $('login').hidden=false;
 async function pack(o,st){for(const k in o){const v=o[k];if(typeof v=='string'&&v.startsWith('data:image')){st.n++;say('Subiendo foto '+st.n+'...');const n='img/'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)+'.jpg';await gh(n,'PUT',{message:'Foto desde panel admin',content:v.split(',')[1]});PV[n]=v;o[k]=n}else if(v&&typeof v=='object')await pack(v,st)}}
@@ -40,8 +41,57 @@ $('ed').innerHTML=`<h2>Contacto</h2><div class="box">${F('WhatsApp (solo número
 <h2>Banners y promociones</h2>${D.banners.map((b,i)=>`<div class="box">${I('Banner '+(i+1),'banners.'+i)}${X('banners.'+i)}</div>`).join('')}<button onclick="add('banners','')">+ Banner</button>
 <h2>Servicios y precios</h2>${D.categories.map((k,a)=>`<div class="box">${F('Categoría','categories.'+a+'.name')}${k.items.map((i,b)=>{const q=`categories.${a}.items.${b}.`;return `<div class="box">${F('Servicio',q+'name')}${F('Precio (S/)',q+'price')}${F('Etiqueta (ej. VIP, vacío = ninguna)',q+'badge')}${F('Detalles (uno por línea)',q+'features','ta')}${X(q.slice(0,-1))}</div>`}).join('')}<button onclick="add('categories.${a}.items',{name:'Nuevo servicio',price:'0',badge:'',features:[]})">+ Servicio</button>${X('categories.'+a)}</div>`).join('')}<button onclick="add('categories',{name:'Nueva categoría',icon:'fa-star',items:[]})">+ Categoría</button>
 <h2>Barberos</h2>${D.barbers.map((b,i)=>{const q='barbers.'+i+'.';return `<div class="box">${F('Nombre',q+'name')}${F('Cargo',q+'role')}${I('Foto',q+'photo')}<label style="color:#fff;font-size:1rem"><input type="checkbox" data-k="${q}available" ${b.available!==false?'checked':''} style="width:auto"> Disponible (aparece en la web y se puede elegir al reservar)</label>${X('barbers.'+i)}</div>`}).join('')}<button onclick="add('barbers',{name:'Nombre',role:'Barbero',photo:'',available:true})">+ Barbero</button>
-<h2>Cupos disponibles</h2><p style="font-size:.85rem;color:#aaa">Elige el barbero y el día; cada barbero tiene sus propios cupos ("Todos los barberos" sirve para horas que valen para cualquiera). Escribe las horas libres separadas por coma (ej. 09:00, 10:30, 15:00). Cuando se reserve una, bórrala de la lista. Si un día no aparece, la web muestra "Sin cupos".</p>${D.slots.map((s,i)=>`<div class="box"><label>Barbero</label><select data-p="slots.${i}.barber"><option value="">Todos los barberos</option>${D.barbers.map(b=>`<option value="${esc(b.name)}"${s.barber==b.name?' selected':''}>${esc(b.name)}</option>`).join('')}</select><label>Fecha</label><input type="date" data-p="slots.${i}.date" value="${esc(s.date)}"><label>Horas libres</label><input data-c="1" data-p="slots.${i}.times" value="${esc(s.times.join(', '))}">${X('slots.'+i)}</div>`).join('')}<button onclick="add('slots',{barber:'',date:'',times:[]})">+ Día</button>
-<h2>Galería</h2>${D.gallery.map((b,i)=>`<div class="box">${I('Foto '+(i+1),'gallery.'+i)}${X('gallery.'+i)}</div>`).join('')}<button onclick="add('gallery','')">+ Foto</button>`}
+${slotsUI()}
+<h2>Galería</h2>${D.gallery.map((b,i)=>`<div class="box">${I('Foto '+(i+1),'gallery.'+i)}${X('gallery.'+i)}</div>`).join('')}<button onclick="add('gallery','')">+ Foto</button>`;genPreview()}
+/* ===== Cupos por semana / mes ===== */
+const G={barber:'*',mode:'week',date:'',month:'',days:[1,2,3,4,5,6],from:'09:00',to:'20:00',step:'60',bFrom:'',bTo:''};
+const pad2=n=>String(n).padStart(2,'0');
+const dkey=d=>d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
+const todayK=()=>dkey(new Date());
+const mins=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
+const hm=n=>pad2(Math.floor(n/60))+':'+pad2(n%60);
+function genDates(onlyDays){let out=[];
+ if(G.mode=='week'){if(!G.date)return out;const [y,m,d]=G.date.split('-').map(Number),b=new Date(y,m-1,d);const off=(b.getDay()+6)%7;b.setDate(b.getDate()-off);for(let i=0;i<7;i++){out.push(new Date(b.getFullYear(),b.getMonth(),b.getDate()+i))}}
+ else{if(!G.month)return out;const [y,m]=G.month.split('-').map(Number),n=new Date(y,m,0).getDate();for(let i=1;i<=n;i++)out.push(new Date(y,m-1,i))}
+ return out.filter(d=>!onlyDays||G.days.includes(d.getDay())).map(dkey)}
+function genTimes(){const a=mins(G.from||'00:00'),z=mins(G.to||'00:00'),s=+G.step||60,r=[];const ba=G.bFrom?mins(G.bFrom):null,bz=G.bTo?mins(G.bTo):null;
+ for(let t=a;t<=z;t+=s){if(ba!==null&&bz!==null&&t>=ba&&t<bz)continue;r.push(hm(t))}return r}
+const genTargets=()=>G.barber=='*'?D.barbers.filter(b=>b.available!==false).map(b=>b.name):[G.barber];
+function sortSlots(){D.slots.sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.barber||'').localeCompare(b.barber||''))}
+function genPreview(){const ds=genDates(true).filter(d=>d>=todayK()),ts=genTimes(),bs=genTargets();
+ const el=$('genPrev');if(!el)return;
+ el.textContent=ds.length&&ts.length?`Se crearán ${ts.length} horas (${ts[0]} a ${ts[ts.length-1]}) en ${ds.length} días × ${bs.length} ${bs.length==1?'barbero':'barberos'} = ${ds.length*bs.length} días con cupos.`:'Elige el periodo, los días y el horario para ver el resumen.'}
+function genApply(){const ds=genDates(true).filter(d=>d>=todayK()),ts=genTimes(),bs=genTargets();
+ if(!ds.length||!ts.length||!bs.length){alert('Falta elegir el periodo, los días o las horas.');return}
+ bs.forEach(b=>ds.forEach(d=>{const bb=G.barber=='*'?b:G.barber=='' ?'':b;const s=D.slots.find(x=>(x.barber||'')==bb&&x.date==d);if(s)s.times=[...ts];else D.slots.push({barber:bb,date:d,times:[...ts]})}));
+ sortSlots();render();say('✅ Cupos creados ('+ds.length*bs.length+' días). Revisa y pulsa Guardar y publicar.')}
+function genDelete(){const ds=genDates(false),bs=G.barber=='*'?[...D.barbers.map(b=>b.name),'']:[G.barber];
+ const hit=D.slots.filter(s=>ds.includes(s.date)&&bs.includes(s.barber||''));
+ if(!hit.length){alert('No hay cupos en ese periodo para esa selección.');return}
+ if(!confirm('¿Borrar '+hit.length+' días con cupos de este periodo?'))return;
+ D.slots=D.slots.filter(s=>!hit.includes(s));render();say('🗑️ Cupos borrados. Pulsa Guardar y publicar.')}
+function clearPast(){const n=D.slots.filter(s=>s.date<todayK()).length;if(!n){alert('No hay días pasados.');return}if(!confirm('¿Borrar '+n+' días pasados?'))return;D.slots=D.slots.filter(s=>s.date>=todayK());render()}
+function slotsUI(){const bo=(v,l)=>`<option value="${esc(v)}"${G.barber==v?' selected':''}>${esc(l)}</option>`;
+ const dn=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+ return `<h2>Cupos disponibles</h2><p style="font-size:.85rem;color:#aaa">Crea los cupos de una <b>semana entera</b> o de un <b>mes completo</b> de una sola vez. Cuando se reserve una hora, bórrala en "Ajustar día por día".</p>
+<div class="box"><b style="color:var(--g)">Crear cupos por semana o mes</b>
+<label>Barbero</label><select data-g="barber">${bo('*','Cada barbero disponible (los mismos horarios)')}${bo('','Todos los barberos (cupo general)')}${D.barbers.map(b=>bo(b.name,b.name)).join('')}</select>
+<label>Periodo</label><select data-g="mode"><option value="week"${G.mode=='week'?' selected':''}>Una semana</option><option value="month"${G.mode=='month'?' selected':''}>Un mes completo</option></select>
+${G.mode=='week'?`<label>Elige cualquier día de esa semana (se usa de lunes a domingo)</label><input type="date" data-g="date" value="${esc(G.date)}">`:`<label>Mes</label><input type="month" data-g="month" value="${esc(G.month)}">`}
+<label>Días de atención</label><div>${[1,2,3,4,5,6,0].map(i=>`<label class="chk"><input type="checkbox" data-g="day" value="${i}"${G.days.includes(i)?' checked':''}> ${dn[i]}</label>`).join('')}</div>
+<div class="g3"><div><label>Desde</label><input type="time" data-g="from" value="${G.from}"></div><div><label>Hasta (última hora)</label><input type="time" data-g="to" value="${G.to}"></div><div><label>Cada</label><select data-g="step">${[30,45,60,90,120].map(m=>`<option value="${m}"${G.step==m?' selected':''}>${m} min</option>`).join('')}</select></div></div>
+<div class="g2"><div><label>Descanso desde (opcional)</label><input type="time" data-g="bFrom" value="${G.bFrom}"></div><div><label>Descanso hasta</label><input type="time" data-g="bTo" value="${G.bTo}"></div></div>
+<p id="genPrev" style="font-size:.85rem;color:#ddd;margin:10px 0 0"></p>
+<button onclick="genApply()">⚡ Crear cupos</button><button class="d" onclick="genDelete()">Borrar cupos de este periodo</button>
+<p style="font-size:.75rem;color:#888;margin:8px 0 0">Si ese barbero ya tenía cupos en esos días, se reemplazan por estas horas. Los días ya pasados no se crean.</p></div>
+<details class="box"><summary style="cursor:pointer;font-weight:700">Ajustar día por día (${D.slots.length} ${D.slots.length==1?'día':'días'} con cupos)</summary>
+<button class="d" onclick="clearPast()">Borrar días pasados</button>
+${D.slots.map((s,i)=>`<div class="box"><label>Barbero</label><select data-p="slots.${i}.barber"><option value="">Todos los barberos</option>${D.barbers.map(b=>`<option value="${esc(b.name)}"${s.barber==b.name?' selected':''}>${esc(b.name)}</option>`).join('')}</select><label>Fecha</label><input type="date" data-p="slots.${i}.date" value="${esc(s.date)}"><label>Horas libres (separadas por coma)</label><input data-c="1" data-p="slots.${i}.times" value="${esc(s.times.join(', '))}">${X('slots.'+i)}</div>`).join('')}
+<button onclick="add('slots',{barber:'',date:'',times:[]})">+ Día suelto</button></details>`}
+$('ed').addEventListener('input',ev=>{const t=ev.target,g=t.dataset.g;if(!g)return;
+ if(g=='day'){const v=+t.value;G.days=t.checked?[...new Set([...G.days,v])]:G.days.filter(x=>x!=v)}else G[g]=t.value;
+ if(g=='mode'||g=='barber'){render();return}genPreview()});
+
 function add(p,v){get(p).push(v);render()}
 function del(p){if(!confirm('¿Eliminar?'))return;const k=p.split('.'),i=k.pop();get(k.join('.')).splice(+i,1);render()}
 $('ed').addEventListener('input',e=>{const t=e.target;if(t.dataset.k){set(t.dataset.k,t.checked);return}if(t.dataset.p)set(t.dataset.p,t.dataset.c?t.value.split(',').map(s=>s.trim()).filter(Boolean):t.dataset.l?t.value.split('\n').map(s=>s.trim()).filter(Boolean):t.value)});
