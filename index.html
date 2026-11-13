@@ -100,8 +100,22 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.88);backdrop-f
 .hero .addr i{color:var(--gold)}
 
 /* ---------- Panel de agenda ---------- */
-.wrap{padding:0 var(--pad)}
-.agenda{margin:-1.2rem auto 0;position:relative;z-index:3;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:2rem 2rem 1.6rem}
+.wrap{padding:4.5rem var(--pad) 0}
+.lead{color:var(--muted);font-size:.9rem;margin-top:.7rem}
+.card-s.sel{border-color:var(--gold);background:#1b1913;box-shadow:0 0 0 1px var(--gold-line)}
+.card-s .btn-gold{width:100%;padding:.8rem}
+.card-s.sel .btn-gold::before{content:"\2713";margin-right:.3rem}
+.chg{display:none;font-size:.68rem;color:var(--gold);margin-top:.3rem}
+.chg.on{display:inline-block}
+.sum-row{position:relative}
+.lock{display:none;font-size:.74rem;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:.7rem .8rem;margin-bottom:.8rem}
+.lock.on{display:block}
+.calbox.dim{opacity:.35;pointer-events:none}
+.st{display:flex;align-items:center;gap:.4rem;font-size:.7rem;font-weight:600;margin-top:.2rem}
+.st i{font-size:.5rem}
+.st.ok{color:var(--ok)}.st.bad{color:var(--bad)}
+.st em{font-style:normal;font-weight:400;color:var(--muted)}
+.agenda{margin:0 auto;position:relative;z-index:3;scroll-margin-top:84px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:2rem 2rem 1.6rem}
 .agenda-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
 .agenda-head h2{font-family:'Inter',sans-serif;font-weight:400;font-size:1.9rem;position:relative;padding-bottom:.7rem}
 .agenda-head h2::after{content:"";position:absolute;left:0;bottom:0;width:38px;height:2px;background:var(--gold)}
@@ -116,11 +130,12 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.88);backdrop-f
 .step .n{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.25);display:grid;place-items:center;font-size:.85rem;color:var(--muted);transition:.25s}
 .step b{display:block;font-size:.82rem;font-weight:500;color:var(--muted)}
 .step small{display:block;font-size:.62rem;color:#6f6c67;white-space:nowrap}
-.step.done .n,.step.active .n{background:var(--gold);border-color:var(--gold);color:#16120b;font-weight:700}
+.step.done .n{background:var(--gold);border-color:var(--gold);color:#16120b;font-weight:700}
+.step.active .n{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
 .step.done b,.step.active b{color:var(--text)}
 .step.last{flex:none}.step.last::after{display:none}
 
-.cols{display:grid;grid-template-columns:1.05fr 1fr 1.1fr 1.05fr;background:var(--bg2);border:1px solid var(--line);border-radius:12px}
+.cols{display:grid;grid-template-columns:1fr 1.1fr 1fr;background:var(--bg2);border:1px solid var(--line);border-radius:12px}
 .col{padding:1.4rem 1.2rem;min-width:0}
 .col+.col{border-left:1px solid var(--line)}
 .col-title{display:flex;align-items:center;gap:.6rem;font-size:.9rem;font-weight:500;margin-bottom:1.1rem}
@@ -143,7 +158,8 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.88);backdrop-f
 .barber{display:flex;align-items:center;gap:.8rem}
 .avatar{flex:none;width:42px;height:42px;border-radius:50%;background:#26231e;border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;color:var(--gold)}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.opt.off{opacity:.45;cursor:not-allowed}
+.opt.off{cursor:not-allowed}
+.opt.off .avatar,.opt.off .t,.opt.off .p{opacity:.5}
 .opt .cnt{font-size:.68rem;color:var(--gold)}
 
 .cal-head{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:8px 8px 0 0;padding:.6rem .8rem;font-size:.85rem}
@@ -187,7 +203,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.88);backdrop-f
 .perk small{display:block;font-size:.72rem;color:var(--muted);line-height:1.35;margin-top:.15rem}
 
 /* ---------- Secciones ---------- */
-section.block{padding:5rem var(--pad) 0}
+section.block{padding:4.5rem var(--pad) 0}
 .head{text-align:center;margin-bottom:2.4rem}
 .head h2{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(1.8rem,4vw,2.5rem);margin-top:.6rem}
 .head h2 em{font-style:normal;color:var(--gold)}
@@ -225,40 +241,44 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
 /* ---------- Responsive ---------- */
 @media(max-width:1060px){
   .cols{grid-template-columns:1fr 1fr}
-  .col:nth-child(3){border-left:0}
-  .col:nth-child(n+3){border-top:1px solid var(--line)}
+  .col-sum{grid-column:1/-1;border-left:0!important;border-top:1px solid var(--line)}
+  .col-sum .sum-wrap{max-width:460px;margin:0 auto}
   .perks{grid-template-columns:1fr 1fr;row-gap:1.4rem}
   .perk:nth-child(3){border-left:0}
   .foot{grid-template-columns:1fr 1fr 1fr}
 }
 @media(max-width:820px){
   .nav-links{display:none}
-  .hero-img{inset:0 0 0 0;opacity:.55}
+  .hero-img{inset:0}
+  .hero-img img{opacity:.5}
   .hero::after{background:linear-gradient(90deg,rgba(11,11,12,.92) 0,rgba(11,11,12,.55) 100%),linear-gradient(0deg,var(--bg) 0,transparent 20%)}
+  .stepper .step small{display:none}
 }
 @media(max-width:640px){
   .hero{padding:3rem 1.25rem 3.5rem;min-height:380px}
+  .wrap{padding-top:3.5rem}
+  section.block{padding-top:3.5rem}
   .agenda{padding:1.3rem 1rem}
   .agenda-head h2{font-size:1.5rem}
   .cols{grid-template-columns:1fr}
   .col+.col{border-left:0;border-top:1px solid var(--line)}
-  .stepper{gap:.3rem}
-  .step div{display:none}
-  .step{max-width:none}
-  .step.active div{display:block;position:absolute;opacity:0}
+  .stepper{align-items:flex-start;gap:.2rem}
+  .step{flex-direction:column;text-align:center;gap:.45rem;max-width:none;flex:1}
+  .step:not(:last-child)::after{display:none}
+  .step b{font-size:.68rem}
   .perks{grid-template-columns:1fr}
   .perk{padding:0 1.2rem}.perk+.perk{border-left:0}
   .foot{grid-template-columns:1fr 1fr}
   .foot>div:first-child{grid-column:1/-1}
   .btn-outline-gold.top span{display:none}
-  .svc-scroll{max-height:none}
+  .carta{grid-template-columns:1fr}
 }
     </style>
 </head>
 <body>
 <header>
   <div class="nav">
-    <a href="#inicio" class="logo"><img src="logo.png" alt="Anto's Barber Style Lounge" class="logo-img"></a>
+    <a href="#inicio" class="logo"><img class="logo-img" alt=""></a>
     <ul class="nav-links">
       <li><a href="#inicio" class="active">Inicio</a></li>
       <li><a href="#servicios">Servicios</a></li>
@@ -266,7 +286,7 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
       <li><a href="#galeria">Galería</a></li>
       <li><a href="#contacto">Contacto</a></li>
     </ul>
-    <a href="#agenda" class="btn-outline-gold top"><span>Agendar</span> <i class="fa-regular fa-calendar-check"></i></a>
+    <a href="#servicios" class="btn-outline-gold top go"><span>Agendar</span> <i class="fa-regular fa-calendar-check"></i></a>
   </div>
 </header>
 
@@ -276,12 +296,17 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
     <div class="eyebrow">Estilo + Confianza + Actitud</div>
     <h1 id="heroTitle">No es solo un corte, <span>es tu experiencia.</span></h1>
     <p id="heroText">Tu estilo, nuestra pasión. Cortes modernos, degradados profesionales y atención superior en Piura.</p>
-    <a href="#agenda" class="btn-gold">Agendar ahora <i class="fa-regular fa-calendar-check"></i></a>
+    <a href="#servicios" class="btn-gold go">Agendar ahora <i class="fa-regular fa-calendar-check"></i></a>
     <div class="addr"><i class="fa-solid fa-location-dot"></i><span id="heroAddr"></span></div>
   </div>
 </section>
 
-<div class="wrap">
+<section class="block" id="servicios">
+  <div class="head"><div class="eyebrow">Paso 1</div><h2>Elige tu <em>servicio</em></h2><p class="lead">Toca “Seleccionar” en el servicio que quieres y te llevamos a reservar tu horario.</p></div>
+  <div class="carta" id="carta"></div>
+</section>
+
+<div class="wrap" id="reserva">
   <section class="agenda" id="agenda">
     <div class="agenda-head">
       <h2>Agenda tu horario</h2>
@@ -289,32 +314,29 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
     </div>
 
     <div class="stepper" id="stepper">
-      <div class="step"><span class="n">1</span><div><b>Servicio</b><small>Escoge el servicio</small></div></div>
+      <div class="step"><span class="n">1</span><div><b>Servicio</b><small>Elige de la carta</small></div></div>
       <div class="step"><span class="n">2</span><div><b>Barbero</b><small>Escoge al profesional</small></div></div>
       <div class="step"><span class="n">3</span><div><b>Fecha y hora</b><small>Selecciona día y horario</small></div></div>
-      <div class="step last"><span class="n">4</span><div><b>Confirmar</b><small>Revisa y confirma</small></div></div>
+      <div class="step last"><span class="n">4</span><div><b>Reservar</b><small>Confirma por WhatsApp</small></div></div>
     </div>
 
     <div class="cols">
-      <div class="col">
-        <div class="col-title"><i class="fa-solid fa-scissors"></i> Escoge el servicio</div>
-        <div class="svc-scroll" id="svcList"></div>
-        <div class="note"><i class="fa-solid fa-circle-info"></i><span>Cada servicio incluye atención profesional y acabado final.</span></div>
-      </div>
       <div class="col">
         <div class="col-title"><i class="fa-regular fa-user"></i> Escoge el barbero</div>
         <div id="barberList"></div>
       </div>
       <div class="col">
         <div class="col-title"><i class="fa-regular fa-calendar"></i> Escoge la fecha</div>
-        <div class="cal-head"><button type="button" id="calPrev" aria-label="Mes anterior"><i class="fa-solid fa-chevron-left"></i></button><span id="calTitle"></span><button type="button" id="calNext" aria-label="Mes siguiente"><i class="fa-solid fa-chevron-right"></i></button></div>
+        <div id="calLock" class="lock"></div>
+        <div class="calbox" id="calBox"><div class="cal-head"><button type="button" id="calPrev" aria-label="Mes anterior"><i class="fa-solid fa-chevron-left"></i></button><span id="calTitle"></span><button type="button" id="calNext" aria-label="Mes siguiente"><i class="fa-solid fa-chevron-right"></i></button></div>
         <div class="cal"><div class="cal-grid" id="calGrid"></div></div>
         <div class="sub">Escoge el horario</div>
-        <div class="times" id="timeList"><p class="empty">Elige un día marcado con punto dorado.</p></div>
+        <div class="times" id="timeList"><p class="empty">Elige un día marcado con punto dorado.</p></div></div>
       </div>
       <div class="col col-sum">
         <div class="col-title"><i class="fa-regular fa-file-lines"></i> Resumen de la cita</div>
-        <div class="sum-row"><small>Servicio</small><span id="sSvc"></span></div>
+        <div class="sum-wrap">
+        <div class="sum-row"><small>Servicio</small><span id="sSvc"></span><a href="#servicios" class="chg" id="chgSvc">Cambiar servicio</a></div>
         <div class="sum-row"><small>Barbero</small><span id="sBar"></span></div>
         <div class="sum-row"><small>Fecha</small><span id="sDate"></span></div>
         <div class="sum-row"><small>Hora</small><span id="sTime"></span></div>
@@ -322,6 +344,7 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
         <input class="name-in" id="clientName" placeholder="Tu nombre" autocomplete="name">
         <button type="button" class="btn-gold" id="confirmBtn"><i class="fa-brands fa-whatsapp" style="font-size:1.1rem"></i> Confirmar por WhatsApp</button>
         <div class="secure"><i class="fa-solid fa-lock"></i> Tu reserva se envía directo a la barbería.</div>
+        </div>
       </div>
     </div>
   </section>
@@ -339,10 +362,6 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
   <div class="ban-grid" id="banners"></div>
 </section>
 
-<section class="block" id="servicios">
-  <div class="head"><div class="eyebrow">Nuestros servicios</div><h2>Carta de <em>servicios</em></h2></div>
-  <div class="carta" id="carta"></div>
-</section>
 
 <section class="block" id="galeria">
   <div class="head"><div class="eyebrow">Galería</div><h2>Nuestros <em>trabajos</em></h2></div>
@@ -354,6 +373,7 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
   <div class="foot-bottom"><span>&copy; 2026 Anto's Barber Style Lounge — Piura. Todos los derechos reservados.</span><span>Hecho con <i class="fa-solid fa-heart"></i> en Piura</span></div>
 </footer>
 
+<script>(function(){var l=document.querySelector('link[rel="apple-touch-icon"]');if(l)document.querySelectorAll('.logo-img').forEach(function(i){i.src=l.href})})();</script>
 <script>document.write('<script src="site.js?'+Date.now()+'"><\/script>')</script>
 <script>
   (function () {

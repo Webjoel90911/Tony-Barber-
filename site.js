@@ -43,7 +43,7 @@
   const services = (D.categories || []).flatMap(k => k.items.map(i => ({ ...i, cat: k.name })));
   const av = b => b.available !== false;
   const barbers = D.barbers || [];
-  const st = { svc: services[0] || null, who: '', date: '', time: '', timeBarber: '', y: now.getFullYear(), m: now.getMonth() };
+  const st = { svc: null, who: null, date: '', time: '', timeBarber: '', y: now.getFullYear(), m: now.getMonth() };
 
   /* ---------- Disponibilidad ---------- */
   const libres = x => (x.times || []).filter(h => x.date !== today || h.padStart(5, '0') > hhmm());
@@ -53,6 +53,7 @@
   const cuenta = n => slotsOf(n).reduce((t, x) => t + libres(x).length, 0);
   // fecha -> { hora: barbero }
   const byDate = who => {
+    who = who || '';
     const out = {};
     slotsOf(who).forEach(x => libres(x).forEach(h => {
       const o = out[x.date] = out[x.date] || {};
@@ -62,34 +63,29 @@
     return out;
   };
 
-  /* ---------- Servicios ---------- */
-  const svcList = $('#svcList');
-  const drawSvc = () => {
-    let last = '';
-    svcList.innerHTML = services.map((s, i) => {
-      const head = s.cat !== last ? `<div class="svc-cat">${e(s.cat)}</div>` : '';
-      last = s.cat;
-      const sel = st.svc === s;
-      return `${head}<button type="button" class="opt${sel ? ' sel' : ''}" data-i="${i}"><span><span class="t">${e(s.name)}</span><span class="p">S/ ${e(s.price)}</span>${s.features && s.features.length ? `<span class="f">${e(s.features.join(' · '))}</span>` : ''}</span><span class="radio"><i class="fa-solid fa-check"></i></span></button>`;
-    }).join('');
+  /* ---------- Servicios (carta) ---------- */
+  const goAgenda = () => { const a = $('#agenda'); if (a) a.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  const carta = $('#carta');
+  const drawCarta = () => {
+    carta.innerHTML = services.map((s, i) => `<div class="card-s${st.svc === s ? ' sel' : ''}">${s.badge ? `<span class="tag">${e(s.badge)}</span>` : ''}<span class="cat">${e(s.cat)}</span><h3>${e(s.name)}</h3><div class="pr">S/ ${e(s.price)}</div>${s.features && s.features.length ? `<ul>${s.features.map(f => `<li><i class="fa-solid fa-check"></i>${e(f)}</li>`).join('')}</ul>` : '<ul></ul>'}<button type="button" class="btn-gold" data-i="${i}">${st.svc === s ? 'Seleccionado' : 'Seleccionar'}</button></div>`).join('');
   };
-  svcList.addEventListener('click', ev => {
-    const b = ev.target.closest('.opt'); if (!b) return;
-    st.svc = services[+b.dataset.i]; drawSvc(); summary();
+  carta.addEventListener('click', ev => {
+    const b = ev.target.closest('button[data-i]'); if (!b) return;
+    st.svc = services[+b.dataset.i];
+    drawCarta(); drawCal(); summary();
+    setTimeout(goAgenda, 120);
   });
+  document.querySelectorAll('a.go').forEach(a => a.addEventListener('click', ev => {
+    if (st.svc) { ev.preventDefault(); goAgenda(); }
+  }));
 
   /* ---------- Barberos ---------- */
   const barList = $('#barberList');
   const drawBar = () => {
-    const card = (name, sub, photo, ok, sel, who) => `<button type="button" class="opt${sel ? ' sel' : ''}${ok ? '' : ' off'}" data-w="${e(who)}" ${ok ? '' : 'disabled'}><span class="barber"><span class="avatar">${photo ? `<img src="${e(photo)}" alt="" onerror="this.remove()">` : '<i class="fa-solid fa-user"></i>'}</span><span><span class="t">${e(name)}</span><span class="p">${sub}</span></span></span><span class="radio"><i class="fa-solid fa-check"></i></span></button>`;
-    const any = cuenta('');
+    const card = (name, role, photo, ok, sel, who, n, icon) => `<button type="button" class="opt${sel ? ' sel' : ''}${ok ? '' : ' off'}" data-w="${e(who)}" ${ok ? '' : 'disabled'}><span class="barber"><span class="avatar">${photo ? `<img src="${e(photo)}" alt="" onerror="this.remove()">` : `<i class="fa-solid ${icon || 'fa-user'}"></i>`}</span><span><span class="t">${e(name)}</span><span class="p">${e(role)}</span><span class="st ${ok ? 'ok' : 'bad'}"><i class="fa-solid fa-circle"></i>${ok ? 'Disponible' : 'No disponible'}${ok ? ` <em>· ${n ? `${n} ${n === 1 ? 'cupo' : 'cupos'}` : 'sin cupos'}</em>` : ''}</span></span></span><span class="radio"><i class="fa-solid fa-check"></i></span></button>`;
     barList.innerHTML =
-      card('Cualquiera disponible', any ? `<span class="cnt">${any} ${any === 1 ? 'cupo' : 'cupos'}</span>` : 'Sin cupos', '', true, st.who === '', '').replace('<i class="fa-solid fa-user"></i>', '<i class="fa-solid fa-users"></i>') +
-      barbers.map(b => {
-        const n = cuenta(b.name);
-        const sub = av(b) ? `${e(b.role || 'Barbero')} · <span class="cnt">${n ? `${n} ${n === 1 ? 'cupo' : 'cupos'}` : 'sin cupos'}</span>` : 'No disponible';
-        return card(b.name, sub, b.photo, av(b), st.who === b.name, b.name);
-      }).join('');
+      card('Cualquiera disponible', 'El primero que tenga cupo', '', true, st.who === '', '', cuenta(''), 'fa-users') +
+      barbers.map(b => card(b.name, b.role || 'Barbero', b.photo, av(b), st.who === b.name, b.name, cuenta(b.name))).join('');
   };
   barList.addEventListener('click', ev => {
     const b = ev.target.closest('.opt'); if (!b || b.disabled) return;
@@ -101,7 +97,12 @@
   /* ---------- Calendario ---------- */
   const calGrid = $('#calGrid');
   const drawCal = () => {
-    const av2 = byDate(st.who);
+    const ready = !!st.svc && st.who !== null;
+    $('#calBox').classList.toggle('dim', !ready);
+    const lk = $('#calLock');
+    lk.classList.toggle('on', !ready);
+    lk.textContent = !st.svc ? 'Primero elige un servicio en la carta.' : 'Elige un barbero para ver sus fechas.';
+    const av2 = ready ? byDate(st.who) : {};
     $('#calTitle').textContent = `${MESES[st.m]} ${st.y}`;
     const first = new Date(st.y, st.m, 1), days = new Date(st.y, st.m + 1, 0).getDate();
     const ym = `${st.y}-${pad(st.m + 1)}`;
@@ -128,7 +129,7 @@
   /* ---------- Horas ---------- */
   const timeList = $('#timeList');
   const drawTimes = () => {
-    const hs = st.date ? byDate(st.who)[st.date] : null;
+    const hs = st.date && st.who !== null ? byDate(st.who)[st.date] : null;
     if (!hs) { timeList.innerHTML = '<p class="empty">Elige un día marcado con punto dorado.</p>'; return; }
     timeList.innerHTML = Object.keys(hs).sort().map(h => `<button type="button" class="time${h === st.time ? ' sel' : ''}" data-h="${h}" data-b="${e(hs[h])}">${h}</button>`).join('');
   };
@@ -141,21 +142,25 @@
   const steps = [...document.querySelectorAll('#stepper .step')];
   const name = $('#clientName');
   const barberName = () => st.who || st.timeBarber || 'Cualquiera disponible';
+  const barberLabel = () => st.who === null ? '' : (st.who || (st.time ? barberName() : 'Cualquiera disponible'));
   function summary() {
     const set = (id, v, empty) => { const el = $(id); el.textContent = v || empty; el.className = v ? '' : 'empty-v'; };
-    $('#sSvc').innerHTML = st.svc ? `<span>${e(st.svc.name)}</span><span>S/ ${e(st.svc.price)}</span>` : '—';
-    set('#sBar', st.time ? barberName() : (st.who || 'Cualquiera disponible'), '—');
+    $('#sSvc').innerHTML = st.svc ? `<span>${e(st.svc.name)}</span><span>S/ ${e(st.svc.price)}</span>` : '<span class="empty-v">Elige un servicio de la carta</span>';
+    $('#chgSvc').classList.add('on');
+    $('#chgSvc').textContent = st.svc ? 'Cambiar servicio' : 'Ir a la carta de servicios';
+    set('#sBar', barberLabel(), 'Elige un barbero');
     set('#sDate', st.date ? fmt(st.date) : '', 'Elige una fecha');
     set('#sTime', st.time, 'Elige una hora');
     $('#sTotal').textContent = st.svc ? `S/ ${st.svc.price}` : 'S/ 0';
-    const done = [!!st.svc, true, !!(st.date && st.time), !!(st.date && st.time && name.value.trim())];
+    const done = [!!st.svc, !!st.svc && st.who !== null, !!st.svc && st.who !== null && !!(st.date && st.time), !!st.svc && st.who !== null && !!(st.date && st.time) && !!name.value.trim()];
     const act = done.indexOf(false);
-    steps.forEach((s, i) => { s.classList.toggle('done', done[i] && i !== act); s.classList.toggle('active', i === act); });
+    steps.forEach((s, i) => { s.classList.toggle('done', done[i]); s.classList.toggle('active', i === act); });
   }
   name.addEventListener('input', summary);
 
   $('#confirmBtn').onclick = () => {
-    if (!st.svc) { alert('Elige un servicio.'); return; }
+    if (!st.svc) { alert('Primero elige un servicio de la carta.'); const c = $('#servicios'); if (c) c.scrollIntoView({ behavior: 'smooth' }); return; }
+    if (st.who === null) { alert('Elige un barbero.'); return; }
     if (!st.date || !st.time) { alert('Elige el día y la hora de tu cita.'); return; }
     const n = name.value.trim();
     if (!n) { alert('Por favor escribe tu nombre.'); name.focus(); return; }
@@ -163,17 +168,10 @@
     window.open('https://wa.me/' + PHONE + '?text=' + encodeURIComponent(msg), '_blank');
   };
 
-  /* ---------- Carta de servicios ---------- */
-  $('#carta').innerHTML = services.map((s, i) => `<div class="card-s">${s.badge ? `<span class="tag">${e(s.badge)}</span>` : ''}<span class="cat">${e(s.cat)}</span><h3>${e(s.name)}</h3><div class="pr">S/ ${e(s.price)}</div>${s.features && s.features.length ? `<ul>${s.features.map(f => `<li><i class="fa-solid fa-check"></i>${e(f)}</li>`).join('')}</ul>` : '<ul></ul>'}<a href="#agenda" class="btn-outline-gold" data-i="${i}">Reservar</a></div>`).join('');
-  $('#carta').addEventListener('click', ev => {
-    const a = ev.target.closest('a[data-i]'); if (!a) return;
-    st.svc = services[+a.dataset.i]; drawSvc(); summary();
-  });
-
   /* ---------- Footer ---------- */
   const li = (cls, t) => `<i class="${cls}"></i>${e(t)}`;
   $('#foot').innerHTML = `
-    <div><a href="#inicio" class="logo"><img src="logo.png" alt="Anto's Barber Style Lounge" class="logo-img"></a>
+    <div><a href="#inicio" class="logo"><img class="logo-img" alt=""></a>
       <p>${e(H.text || '')}</p>
       <div class="social">
         ${c.tiktok ? `<a href="${e(c.tiktok)}" target="_blank" rel="noopener" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>` : ''}
@@ -186,8 +184,11 @@
     <div><h4>Contacto</h4><ul><li>${li('fa-solid fa-phone', c.phoneText || '')}</li><li>${li('fa-solid fa-location-dot', c.address || '')}</li></ul></div>
     <div><h4>Horario de atención</h4><p>${e(c.hours1 || '')}</p><p>${e(c.hours2 || '')}</p></div>`;
 
+  const ic = document.querySelector('link[rel="apple-touch-icon"]');
+  if (ic) document.querySelectorAll('.logo-img').forEach(i => { i.src = ic.href; });
+
   /* ---------- Inicio ---------- */
   const first = Object.keys(byDate('')).sort()[0];
   if (first) { const d = parse(first); st.y = d.getFullYear(); st.m = d.getMonth(); }
-  drawSvc(); drawBar(); drawCal(); drawTimes(); summary();
+  drawCarta(); drawBar(); drawCal(); drawTimes(); summary();
 })();
