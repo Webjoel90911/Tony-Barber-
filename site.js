@@ -64,14 +64,30 @@
   };
 
   /* ---------- Servicios (carta) ---------- */
+  const drawPick = () => {
+    let last = '';
+    $('#pickGrid').innerHTML = services.map((s, i) => {
+      const head = s.cat !== last ? `<div class="svc-cat">${e(s.cat)}</div>` : '';
+      last = s.cat;
+      return `${head}<button type="button" class="opt${st.svc === s ? ' sel' : ''}" data-i="${i}"><span><span class="t">${e(s.name)}</span><span class="p">S/ ${e(s.price)}</span></span><span class="radio"><i class="fa-solid fa-check"></i></span></button>`;
+    }).join('');
+  };
   const modal = $('#bookModal');
-  const openBook = () => { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); document.body.classList.add('noscroll'); modal.scrollTop = 0; };
+  const pick = $('#svcPick');
+  const showPick = on => { pick.classList.toggle('on', !!on); if (on) drawPick(); };
+  const openBook = (withPick) => { showPick(withPick); modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); document.body.classList.add('noscroll'); modal.scrollTop = 0; };
   const closeBook = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); document.body.classList.remove('noscroll'); };
-  $('#openBook').addEventListener('click', openBook);
+  $('#openBook').addEventListener('click', () => openBook(true));
   $('#closeBook').addEventListener('click', closeBook);
   modal.addEventListener('click', ev => { if (ev.target === modal) closeBook(); });
   document.addEventListener('keydown', ev => { if (ev.key === 'Escape') closeBook(); });
-  $('#chgSvc').addEventListener('click', ev => { ev.preventDefault(); closeBook(); const c = $('#servicios'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  $('#chgSvc').addEventListener('click', ev => { ev.preventDefault(); showPick(true); modal.scrollTo({ top: 0, behavior: 'smooth' }); });
+  $('#pickGrid').addEventListener('click', ev => {
+    const b = ev.target.closest('.opt'); if (!b) return;
+    st.svc = services[+b.dataset.i];
+    showPick(false); drawCarta(); drawCal(); summary();
+    modal.scrollTo({ top: 0, behavior: 'smooth' });
+  });
   const carta = $('#carta');
   const drawCarta = () => {
     carta.innerHTML = services.map((s, i) => `<div class="card-s${st.svc === s ? ' sel' : ''}">${s.badge ? `<span class="tag">${e(s.badge)}</span>` : ''}<span class="cat">${e(s.cat)}</span><h3>${e(s.name)}</h3><div class="pr">S/ ${e(s.price)}</div>${s.features && s.features.length ? `<ul>${s.features.map(f => `<li><i class="fa-solid fa-check"></i>${e(f)}</li>`).join('')}</ul>` : '<ul></ul>'}<button type="button" class="btn-gold" data-i="${i}">${st.svc === s ? 'Seleccionado' : 'Seleccionar'}</button></div>`).join('');
@@ -80,18 +96,18 @@
     const b = ev.target.closest('button[data-i]'); if (!b) return;
     st.svc = services[+b.dataset.i];
     drawCarta(); drawCal(); summary();
-    openBook();
+    openBook(false);
   });
 
   /* ---------- Barberos ---------- */
-  $('#team').innerHTML = barbers.map(b => `<div class="member${av(b) ? '' : ' off'}"><div class="ph">${b.photo ? `<img src="${e(b.photo)}" alt="${e(b.name)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'fa-solid fa-user'}))">` : '<i class="fa-solid fa-user"></i>'}</div><div class="in"><h3>${e(b.name)}</h3><div class="role">${e(b.role || 'Barbero')}</div><div class="st ${av(b) ? 'ok' : 'bad'}"><i class="fa-solid fa-circle"></i>${av(b) ? 'Disponible' : 'No disponible'}</div></div></div>`).join('');
+  $('#team').innerHTML = barbers.map(b => { const ok = av(b) && cuenta(b.name) > 0; return `<div class="member${ok ? '' : ' off'}"><div class="ph">${b.photo ? `<img src="${e(b.photo)}" alt="${e(b.name)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'fa-solid fa-user'}))">` : '<i class="fa-solid fa-user"></i>'}</div><div class="in"><h3>${e(b.name)}</h3><div class="role">${e(b.role || 'Barbero')}</div><div class="st ${ok ? 'ok' : 'bad'}"><i class="fa-solid fa-circle"></i>${ok ? 'Disponible' : 'No disponible'}</div></div></div>`; }).join('');
   $('#equipo').style.display = barbers.length ? '' : 'none';
   const barList = $('#barberList');
   const drawBar = () => {
     const card = (name, role, photo, ok, sel, who, n, icon) => `<button type="button" class="opt${sel ? ' sel' : ''}${ok ? '' : ' off'}" data-w="${e(who)}" ${ok ? '' : 'disabled'}><span class="barber"><span class="avatar">${photo ? `<img src="${e(photo)}" alt="" onerror="this.remove()">` : `<i class="fa-solid ${icon || 'fa-user'}"></i>`}</span><span><span class="t">${e(name)}</span><span class="p">${e(role)}</span><span class="st ${ok ? 'ok' : 'bad'}"><i class="fa-solid fa-circle"></i>${ok ? 'Disponible' : 'No disponible'}${ok ? ` <em>· ${n ? `${n} ${n === 1 ? 'cupo' : 'cupos'}` : 'sin cupos'}</em>` : ''}</span></span></span><span class="radio"><i class="fa-solid fa-check"></i></span></button>`;
     barList.innerHTML =
-      card('Cualquiera disponible', 'El primero que tenga cupo', '', true, st.who === '', '', cuenta(''), 'fa-users') +
-      barbers.map(b => card(b.name, b.role || 'Barbero', b.photo, av(b), st.who === b.name, b.name, cuenta(b.name))).join('');
+      card('Cualquiera disponible', 'El primero que tenga cupo', '', cuenta('') > 0, st.who === '', '', cuenta(''), 'fa-users') +
+      barbers.map(b => { const n = cuenta(b.name); return card(b.name, b.role || 'Barbero', b.photo, av(b) && n > 0, st.who === b.name, b.name, n); }).join('');
   };
   barList.addEventListener('click', ev => {
     const b = ev.target.closest('.opt'); if (!b || b.disabled) return;
@@ -107,7 +123,7 @@
     $('#calBox').classList.toggle('dim', !ready);
     const lk = $('#calLock');
     lk.classList.toggle('on', !ready);
-    lk.textContent = !st.svc ? 'Primero elige un servicio en la carta.' : 'Elige un barbero para ver sus fechas.';
+    lk.textContent = !st.svc ? 'Primero elige un servicio.' : 'Elige un barbero para ver sus fechas.';
     const av2 = ready ? byDate(st.who) : {};
     $('#calTitle').textContent = `${MESES[st.m]} ${st.y}`;
     const first = new Date(st.y, st.m, 1), days = new Date(st.y, st.m + 1, 0).getDate();
@@ -151,9 +167,9 @@
   const barberLabel = () => st.who === null ? '' : (st.who || (st.time ? barberName() : 'Cualquiera disponible'));
   function summary() {
     const set = (id, v, empty) => { const el = $(id); el.textContent = v || empty; el.className = v ? '' : 'empty-v'; };
-    $('#sSvc').innerHTML = st.svc ? `<span>${e(st.svc.name)}</span><span>S/ ${e(st.svc.price)}</span>` : '<span class="empty-v">Elige un servicio de la carta</span>';
+    $('#sSvc').innerHTML = st.svc ? `<span>${e(st.svc.name)}</span><span>S/ ${e(st.svc.price)}</span>` : '<span class="empty-v">Elige un servicio</span>';
     $('#chgSvc').classList.add('on');
-    $('#chgSvc').textContent = st.svc ? 'Cambiar servicio' : 'Ir a la carta de servicios';
+    $('#chgSvc').textContent = st.svc ? 'Cambiar servicio' : 'Elegir servicio';
     set('#sBar', barberLabel(), 'Elige un barbero');
     set('#sDate', st.date ? fmt(st.date) : '', 'Elige una fecha');
     set('#sTime', st.time, 'Elige una hora');
@@ -165,7 +181,7 @@
   name.addEventListener('input', summary);
 
   $('#confirmBtn').onclick = () => {
-    if (!st.svc) { alert('Primero elige un servicio de la carta.'); closeBook(); const c = $('#servicios'); if (c) c.scrollIntoView({ behavior: 'smooth' }); return; }
+    if (!st.svc) { alert('Primero elige un servicio.'); showPick(true); modal.scrollTo({ top: 0, behavior: 'smooth' }); return; }
     if (st.who === null) { alert('Elige un barbero.'); return; }
     if (!st.date || !st.time) { alert('Elige el día y la hora de tu cita.'); return; }
     const n = name.value.trim();

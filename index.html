@@ -81,9 +81,9 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.9);backdrop-fi
 .nav-links a:hover{opacity:1}
 .nav-links a.active{color:var(--gold);opacity:1;font-weight:600}
 .nav-links .ind{position:absolute;bottom:0;left:0;height:2px;width:0;background:var(--gold);border-radius:2px;transition:left .35s cubic-bezier(.4,0,.2,1),width .35s cubic-bezier(.4,0,.2,1)}
-.wa-btn{flex:none;display:inline-flex;align-items:center;gap:.55rem;border:1px solid var(--gold);color:var(--gold);border-radius:8px;padding:.65rem 1.1rem;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;transition:.2s}
-.wa-btn i{font-size:1.15rem;color:#25d366}
-.wa-btn:hover{background:var(--gold);color:#16120b}
+.wa-btn{flex:none;display:inline-flex;align-items:center;gap:.55rem;border:1px solid var(--gold);background:var(--gold);color:#16120b;border-radius:8px;padding:.65rem 1.1rem;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;transition:.2s}
+.wa-btn i{font-size:1.15rem;color:#16120b}
+.wa-btn:hover{background:var(--gold2);border-color:var(--gold2)}
 .btn-outline-gold{display:inline-flex;align-items:center;gap:.6rem;border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:.7rem 1.3rem;font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;transition:.2s;background:transparent}
 .btn-outline-gold:hover{background:var(--gold);color:#16120b}
 .btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;background:var(--gold);color:#16120b;border:0;border-radius:6px;padding:.95rem 1.6rem;font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;transition:.2s}
@@ -254,6 +254,13 @@ body.noscroll{overflow:hidden}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes pop{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
 
+.pick{display:none;margin-bottom:1.2rem;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:1.2rem}
+.pick.on{display:block}
+.pick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
+.pick-grid .opt{margin:0}
+.pick-grid .svc-cat{grid-column:1/-1;margin:.6rem 0 0}
+.pick-grid .svc-cat:first-child{margin-top:0}
+
 /* ---------- Equipo ---------- */
 .team{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.1rem}
 .member{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:.25s}
@@ -270,6 +277,7 @@ section.perks-sec{padding:4.5rem var(--pad) 0}
 
 @media(max-width:1060px){
   .cols{grid-template-columns:1fr 1fr}
+  .pick-grid{grid-template-columns:1fr 1fr}
   .col-sum{grid-column:1/-1;border-left:0!important;border-top:1px solid var(--line)}
   .col-sum .sum-wrap{max-width:460px;margin:0 auto}
   .perks{grid-template-columns:1fr 1fr;row-gap:1.4rem}
@@ -289,6 +297,7 @@ section.perks-sec{padding:4.5rem var(--pad) 0}
   .agenda{padding:1.3rem 1rem}
   .agenda-head h2{font-size:1.5rem}
   .cols{grid-template-columns:1fr}
+  .pick-grid{grid-template-columns:1fr}
   .col+.col{border-left:0;border-top:1px solid var(--line)}
   .stepper{align-items:flex-start;gap:.2rem}
   .step{flex-direction:column;text-align:center;gap:.45rem;max-width:none;flex:1}
@@ -382,10 +391,15 @@ section.perks-sec{padding:4.5rem var(--pad) 0}
     </div>
 
     <div class="stepper" id="stepper">
-      <div class="step"><span class="n">1</span><div><b>Servicio</b><small>Elige de la carta</small></div></div>
+      <div class="step"><span class="n">1</span><div><b>Servicio</b><small>Elige el servicio</small></div></div>
       <div class="step"><span class="n">2</span><div><b>Barbero</b><small>Escoge al profesional</small></div></div>
       <div class="step"><span class="n">3</span><div><b>Fecha y hora</b><small>Selecciona día y horario</small></div></div>
       <div class="step last"><span class="n">4</span><div><b>Reservar</b><small>Confirma por WhatsApp</small></div></div>
+    </div>
+
+    <div class="pick" id="svcPick">
+      <div class="col-title"><i class="fa-solid fa-scissors"></i> Escoge el servicio</div>
+      <div class="pick-grid" id="pickGrid"></div>
     </div>
 
     <div class="cols">
