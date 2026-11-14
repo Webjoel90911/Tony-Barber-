@@ -69,17 +69,21 @@ button{cursor:pointer;font-family:inherit}
 .serif,h1,h2.serif{font-family:'Playfair Display',Georgia,serif}
 
 /* ---------- Header ---------- */
-header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.6rem var(--pad)}
-.logo{display:flex;align-items:center;gap:.7rem}
+header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--gold-line)}
+.nav{display:flex;align-items:center;gap:1.2rem;padding:.55rem var(--pad)}
+.logo{display:flex;align-items:center;gap:.7rem;flex:none}
 .logo-img{height:60px;width:60px;border-radius:8px;display:block;object-fit:cover}
 .foot .logo-img{height:84px;width:84px}
-.logo span{display:flex;flex-direction:column;line-height:1.1}
-.logo small{font-size:.62rem;letter-spacing:.22em;color:var(--text)}
-.logo strong{font-family:'Playfair Display',serif;font-weight:500;font-size:1.35rem;letter-spacing:.02em}
-.nav-links{display:flex;gap:2.4rem}
-.nav-links a{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text);opacity:.85;padding:.3rem 0;border-bottom:1px solid transparent;transition:.2s}
-.nav-links a:hover,.nav-links a.active{color:var(--gold);opacity:1;border-color:var(--gold)}
+.menu{flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-snap-type:x proximity;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}
+.menu::-webkit-scrollbar{display:none}
+.nav-links{display:flex;position:relative;width:max-content;min-width:100%;padding:0 12px}
+.nav-links a{flex:none;scroll-snap-align:center;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text);opacity:.7;padding:1.2rem 1.1rem;transition:color .25s,opacity .25s}
+.nav-links a:hover{opacity:1}
+.nav-links a.active{color:var(--gold);opacity:1;font-weight:600}
+.nav-links .ind{position:absolute;bottom:0;left:0;height:2px;width:0;background:var(--gold);border-radius:2px;transition:left .35s cubic-bezier(.4,0,.2,1),width .35s cubic-bezier(.4,0,.2,1)}
+.wa-btn{flex:none;display:inline-flex;align-items:center;gap:.55rem;border:1px solid var(--gold);color:var(--gold);border-radius:8px;padding:.65rem 1.1rem;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;transition:.2s}
+.wa-btn i{font-size:1.15rem;color:#25d366}
+.wa-btn:hover{background:var(--gold);color:#16120b}
 .btn-outline-gold{display:inline-flex;align-items:center;gap:.6rem;border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:.7rem 1.3rem;font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;transition:.2s;background:transparent}
 .btn-outline-gold:hover{background:var(--gold);color:#16120b}
 .btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;background:var(--gold);color:#16120b;border:0;border-radius:6px;padding:.95rem 1.6rem;font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;transition:.2s}
@@ -100,7 +104,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.88);backdrop-f
 .hero .addr i{color:var(--gold)}
 
 /* ---------- Panel de agenda ---------- */
-.wrap{padding:4.5rem var(--pad) 0}
+.wrap{padding:0 var(--pad)}
 .lead{color:var(--muted);font-size:.9rem;margin-top:.7rem}
 .card-s.sel{border-color:var(--gold);background:#1b1913;box-shadow:0 0 0 1px var(--gold-line)}
 .card-s .btn-gold{width:100%;padding:.8rem}
@@ -115,7 +119,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.88);backdrop-f
 .st i{font-size:.5rem}
 .st.ok{color:var(--ok)}.st.bad{color:var(--bad)}
 .st em{font-style:normal;font-weight:400;color:var(--muted)}
-.agenda{margin:0 auto;position:relative;z-index:3;scroll-margin-top:84px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:2rem 2rem 1.6rem}
+.agenda{margin:0 auto;position:relative;z-index:3;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:2rem 2rem 1.6rem}
 .agenda-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
 .agenda-head h2{font-family:'Inter',sans-serif;font-weight:400;font-size:1.9rem;position:relative;padding-bottom:.7rem}
 .agenda-head h2::after{content:"";position:absolute;left:0;bottom:0;width:38px;height:2px;background:var(--gold)}
@@ -235,10 +239,35 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
 .social{display:flex;gap:.6rem;margin-top:1rem}
 .social a{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--text);font-size:.85rem;transition:.2s}
 .social a:hover{border-color:var(--gold);color:var(--gold)}
-.foot-bottom{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:1px solid var(--line);padding:1.2rem var(--pad);font-size:.7rem;color:var(--muted)}
+.foot-bottom{display:flex;justify-content:center;text-align:center;gap:1rem;flex-wrap:wrap;border-top:1px solid var(--line);padding:1.2rem var(--pad);font-size:.7rem;color:var(--muted)}
 .foot-bottom i{color:#d6453d}
 
 /* ---------- Responsive ---------- */
+/* ---------- Modal de agenda ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:none;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);overflow-y:auto;overscroll-behavior:contain;padding:1.5rem 1rem}
+.modal.open{display:block;animation:fade .2s}
+.modal .agenda{width:100%;max-width:1120px;margin:0 auto;animation:pop .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.mclose{position:absolute;top:1rem;right:1rem;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:1rem;display:grid;place-items:center;transition:.2s;z-index:2}
+.mclose:hover{border-color:var(--gold);color:var(--gold)}
+.agenda-head{padding-right:3.2rem}
+body.noscroll{overflow:hidden}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+
+/* ---------- Equipo ---------- */
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.1rem}
+.member{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:.25s}
+.member:hover{border-color:var(--gold-line);transform:translateY(-3px)}
+.member .ph{aspect-ratio:4/4.4;background:#1d1b18;display:grid;place-items:center;color:var(--gold);font-size:3.5rem;overflow:hidden}
+.member .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.member .in{padding:1.1rem 1.2rem 1.3rem;text-align:center}
+.member h3{font-family:'Playfair Display',serif;font-weight:500;font-size:1.2rem}
+.member .role{font-size:.78rem;color:var(--muted);margin:.15rem 0 .5rem}
+.member .st{justify-content:center;font-size:.78rem}
+.member.off .ph img{filter:grayscale(.8) brightness(.7)}
+.perks{margin:0 auto}
+section.perks-sec{padding:4.5rem var(--pad) 0}
+
 @media(max-width:1060px){
   .cols{grid-template-columns:1fr 1fr}
   .col-sum{grid-column:1/-1;border-left:0!important;border-top:1px solid var(--line)}
@@ -248,7 +277,6 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
   .foot{grid-template-columns:1fr 1fr 1fr}
 }
 @media(max-width:820px){
-  .nav-links{display:none}
   .hero-img{inset:0}
   .hero-img img{opacity:.5}
   .hero::after{background:linear-gradient(90deg,rgba(11,11,12,.92) 0,rgba(11,11,12,.55) 100%),linear-gradient(0deg,var(--bg) 0,transparent 20%)}
@@ -270,7 +298,14 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
   .perk{padding:0 1.2rem}.perk+.perk{border-left:0}
   .foot{grid-template-columns:1fr 1fr}
   .foot>div:first-child{grid-column:1/-1}
-  .btn-outline-gold.top span{display:none}
+  .wa-btn span{display:none}
+  .wa-btn{padding:.6rem .7rem}
+  .wa-btn i{font-size:1.3rem}
+  .logo-img{height:46px;width:46px}
+  .nav{gap:.6rem;padding:.5rem 1rem}
+  .nav-links a{padding:1rem .8rem;font-size:.68rem}
+  .modal{padding:0}
+  .modal .agenda{border-radius:0;min-height:100%;border:0}
   .carta{grid-template-columns:1fr}
 }
     </style>
@@ -278,15 +313,18 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
 <body>
 <header>
   <div class="nav">
-    <a href="#inicio" class="logo"><img class="logo-img" alt=""></a>
-    <ul class="nav-links">
-      <li><a href="#inicio" class="active">Inicio</a></li>
-      <li><a href="#servicios">Servicios</a></li>
-      <li><a href="#agenda">Barberos</a></li>
-      <li><a href="#galeria">Galería</a></li>
-      <li><a href="#contacto">Contacto</a></li>
-    </ul>
-    <a href="#servicios" class="btn-outline-gold top go"><span>Agendar</span> <i class="fa-regular fa-calendar-check"></i></a>
+    <a href="#inicio" class="logo" aria-label="Inicio"><img class="logo-img" alt=""></a>
+    <nav class="menu" id="menu" aria-label="Menú principal">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#inicio" class="active">Inicio</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#promos">Promociones</a></li>
+        <li><a href="#galeria">Trabajos</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+        <span class="ind" id="ind"></span>
+      </ul>
+    </nav>
+    <a href="#contacto" class="wa-btn" aria-label="WhatsApp y contacto"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></a>
   </div>
 </header>
 
@@ -296,20 +334,50 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
     <div class="eyebrow">Estilo + Confianza + Actitud</div>
     <h1 id="heroTitle">No es solo un corte, <span>es tu experiencia.</span></h1>
     <p id="heroText">Tu estilo, nuestra pasión. Cortes modernos, degradados profesionales y atención superior en Piura.</p>
-    <a href="#servicios" class="btn-gold go">Agendar ahora <i class="fa-regular fa-calendar-check"></i></a>
+    <button type="button" class="btn-gold" id="openBook">Agendar ahora <i class="fa-regular fa-calendar-check"></i></button>
     <div class="addr"><i class="fa-solid fa-location-dot"></i><span id="heroAddr"></span></div>
   </div>
 </section>
 
 <section class="block" id="servicios">
-  <div class="head"><div class="eyebrow">Paso 1</div><h2>Elige tu <em>servicio</em></h2><p class="lead">Toca “Seleccionar” en el servicio que quieres y te llevamos a reservar tu horario.</p></div>
+  <div class="head"><div class="eyebrow">Servicios</div><h2>Nuestra carta de <em>servicios</em></h2><p class="lead">Toca “Seleccionar” en el servicio que quieres y se abre tu reserva.</p></div>
   <div class="carta" id="carta"></div>
 </section>
 
-<div class="wrap" id="reserva">
-  <section class="agenda" id="agenda">
+<section class="block" id="equipo">
+  <div class="head"><div class="eyebrow">Conoce al equipo</div><h2>Nuestro equipo de <em>profesionales</em></h2></div>
+  <div class="team" id="team"></div>
+</section>
+
+<section class="perks-sec">
+  <div class="perks">
+    <div class="perk"><i class="fa-regular fa-calendar-check"></i><div><b>Reserva rápida</b><small>Elige tu horario en pocos clics.</small></div></div>
+    <div class="perk"><i class="fa-solid fa-award"></i><div><b>Profesionales calificados</b><small>Barberos con experiencia para un resultado impecable.</small></div></div>
+    <div class="perk"><i class="fa-solid fa-chair"></i><div><b>Ambiente premium</b><small>Comodidad y calidad que mereces.</small></div></div>
+    <div class="perk"><i class="fa-brands fa-whatsapp"></i><div><b>Confirma por WhatsApp</b><small>Atención directa y sin complicaciones.</small></div></div>
+  </div>
+</section>
+
+<section class="block" id="promos">
+  <div class="head"><div class="eyebrow">Promociones</div><h2>Ofertas <em>especiales</em></h2></div>
+  <div class="ban-grid" id="banners"></div>
+</section>
+
+<section class="block" id="galeria">
+  <div class="head"><div class="eyebrow">Galería</div><h2>Nuestros <em>trabajos</em></h2></div>
+  <div class="gal-grid" id="gallery"></div>
+</section>
+
+<footer id="contacto">
+  <div class="foot" id="foot"></div>
+  <div class="foot-bottom"><span>Sitio hecho por <a href="https://joels09.github.io/Joel-Webs/" target="_blank" rel="noopener" style="color:var(--gold)">Joel Webs Studio</a> &copy;2026</span></div>
+</footer>
+
+<div class="modal" id="bookModal" aria-hidden="true">
+  <section class="agenda" id="agenda" role="dialog" aria-modal="true" aria-labelledby="bookTitle">
+    <button type="button" class="mclose" id="closeBook" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
     <div class="agenda-head">
-      <h2>Agenda tu horario</h2>
+      <h2 id="bookTitle">Agenda tu horario</h2>
       <div class="hours"><i class="fa-regular fa-clock"></i><div><small>ATENCIÓN</small><b id="hoursTxt">Lunes a Domingo</b></div></div>
     </div>
 
@@ -348,48 +416,36 @@ footer{margin-top:5rem;background:#08080a;border-top:1px solid var(--line)}
       </div>
     </div>
   </section>
-
-  <div class="perks">
-    <div class="perk"><i class="fa-regular fa-calendar-check"></i><div><b>Reserva rápida</b><small>Elige tu horario en pocos clics.</small></div></div>
-    <div class="perk"><i class="fa-solid fa-award"></i><div><b>Profesionales calificados</b><small>Barberos con experiencia para un resultado impecable.</small></div></div>
-    <div class="perk"><i class="fa-solid fa-chair"></i><div><b>Ambiente premium</b><small>Comodidad y calidad que mereces.</small></div></div>
-    <div class="perk"><i class="fa-brands fa-whatsapp"></i><div><b>Confirma por WhatsApp</b><small>Atención directa y sin complicaciones.</small></div></div>
-  </div>
 </div>
-
-<section class="block" id="promos">
-  <div class="head"><div class="eyebrow">Promociones</div><h2>Ofertas <em>especiales</em></h2></div>
-  <div class="ban-grid" id="banners"></div>
-</section>
-
-
-<section class="block" id="galeria">
-  <div class="head"><div class="eyebrow">Galería</div><h2>Nuestros <em>trabajos</em></h2></div>
-  <div class="gal-grid" id="gallery"></div>
-</section>
-
-<footer id="contacto">
-  <div class="foot" id="foot"></div>
-  <div class="foot-bottom"><span>&copy; 2026 Anto's Barber Style Lounge — Piura. Todos los derechos reservados.</span><span>Hecho con <i class="fa-solid fa-heart"></i> en Piura</span></div>
-</footer>
 
 <script>(function(){var l=document.querySelector('link[rel="apple-touch-icon"]');if(l)document.querySelectorAll('.logo-img').forEach(function(i){i.src=l.href})})();</script>
 <script>document.write('<script src="site.js?'+Date.now()+'"><\/script>')</script>
 <script>
-  (function () {
-    var links = [].slice.call(document.querySelectorAll('.nav-links a'));
-    var map = {};
-    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
-    if (!('IntersectionObserver' in window)) return;
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        links.forEach(function (a) { a.classList.remove('active'); });
-        if (map[en.target.id]) map[en.target.id].classList.add('active');
-      });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-    Object.keys(map).forEach(function (id) { var s = document.getElementById(id); if (s) io.observe(s); });
-  })();
+(function () {
+  var menu = document.getElementById('menu'), ul = document.getElementById('navLinks'), ind = document.getElementById('ind');
+  var links = [].slice.call(ul.querySelectorAll('a'));
+  var ids = links.map(function (a) { return a.getAttribute('href').slice(1); });
+  var cur = -1;
+  function place(i, smooth) {
+    var a = links[i];
+    ind.style.left = a.offsetLeft + 'px'; ind.style.width = a.offsetWidth + 'px';
+    var x = a.offsetLeft - (menu.clientWidth - a.offsetWidth) / 2;
+    if (menu.scrollWidth > menu.clientWidth) menu.scrollTo({ left: x, behavior: smooth ? 'smooth' : 'auto' });
+  }
+  function spy() {
+    var y = window.innerHeight * 0.35, idx = 0;
+    ids.forEach(function (id, i) { var el = document.getElementById(id); if (el && el.getBoundingClientRect().top <= y) idx = i; });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 6) idx = ids.length - 1;
+    if (idx === cur) return;
+    cur = idx;
+    links.forEach(function (a, i) { a.classList.toggle('active', i === idx); });
+    place(idx, true);
+  }
+  var t; window.addEventListener('scroll', function () { if (t) return; t = requestAnimationFrame(function () { t = 0; spy(); }); }, { passive: true });
+  window.addEventListener('resize', function () { place(Math.max(cur, 0), false); });
+  window.addEventListener('load', function () { cur = -1; spy(); place(Math.max(cur, 0), false); });
+  spy();
+})();
 </script>
 </body>
 </html>

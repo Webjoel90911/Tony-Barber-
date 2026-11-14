@@ -64,7 +64,14 @@
   };
 
   /* ---------- Servicios (carta) ---------- */
-  const goAgenda = () => { const a = $('#agenda'); if (a) a.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  const modal = $('#bookModal');
+  const openBook = () => { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); document.body.classList.add('noscroll'); modal.scrollTop = 0; };
+  const closeBook = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); document.body.classList.remove('noscroll'); };
+  $('#openBook').addEventListener('click', openBook);
+  $('#closeBook').addEventListener('click', closeBook);
+  modal.addEventListener('click', ev => { if (ev.target === modal) closeBook(); });
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape') closeBook(); });
+  $('#chgSvc').addEventListener('click', ev => { ev.preventDefault(); closeBook(); const c = $('#servicios'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   const carta = $('#carta');
   const drawCarta = () => {
     carta.innerHTML = services.map((s, i) => `<div class="card-s${st.svc === s ? ' sel' : ''}">${s.badge ? `<span class="tag">${e(s.badge)}</span>` : ''}<span class="cat">${e(s.cat)}</span><h3>${e(s.name)}</h3><div class="pr">S/ ${e(s.price)}</div>${s.features && s.features.length ? `<ul>${s.features.map(f => `<li><i class="fa-solid fa-check"></i>${e(f)}</li>`).join('')}</ul>` : '<ul></ul>'}<button type="button" class="btn-gold" data-i="${i}">${st.svc === s ? 'Seleccionado' : 'Seleccionar'}</button></div>`).join('');
@@ -73,13 +80,12 @@
     const b = ev.target.closest('button[data-i]'); if (!b) return;
     st.svc = services[+b.dataset.i];
     drawCarta(); drawCal(); summary();
-    setTimeout(goAgenda, 120);
+    openBook();
   });
-  document.querySelectorAll('a.go').forEach(a => a.addEventListener('click', ev => {
-    if (st.svc) { ev.preventDefault(); goAgenda(); }
-  }));
 
   /* ---------- Barberos ---------- */
+  $('#team').innerHTML = barbers.map(b => `<div class="member${av(b) ? '' : ' off'}"><div class="ph">${b.photo ? `<img src="${e(b.photo)}" alt="${e(b.name)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'fa-solid fa-user'}))">` : '<i class="fa-solid fa-user"></i>'}</div><div class="in"><h3>${e(b.name)}</h3><div class="role">${e(b.role || 'Barbero')}</div><div class="st ${av(b) ? 'ok' : 'bad'}"><i class="fa-solid fa-circle"></i>${av(b) ? 'Disponible' : 'No disponible'}</div></div></div>`).join('');
+  $('#equipo').style.display = barbers.length ? '' : 'none';
   const barList = $('#barberList');
   const drawBar = () => {
     const card = (name, role, photo, ok, sel, who, n, icon) => `<button type="button" class="opt${sel ? ' sel' : ''}${ok ? '' : ' off'}" data-w="${e(who)}" ${ok ? '' : 'disabled'}><span class="barber"><span class="avatar">${photo ? `<img src="${e(photo)}" alt="" onerror="this.remove()">` : `<i class="fa-solid ${icon || 'fa-user'}"></i>`}</span><span><span class="t">${e(name)}</span><span class="p">${e(role)}</span><span class="st ${ok ? 'ok' : 'bad'}"><i class="fa-solid fa-circle"></i>${ok ? 'Disponible' : 'No disponible'}${ok ? ` <em>· ${n ? `${n} ${n === 1 ? 'cupo' : 'cupos'}` : 'sin cupos'}</em>` : ''}</span></span></span><span class="radio"><i class="fa-solid fa-check"></i></span></button>`;
@@ -159,7 +165,7 @@
   name.addEventListener('input', summary);
 
   $('#confirmBtn').onclick = () => {
-    if (!st.svc) { alert('Primero elige un servicio de la carta.'); const c = $('#servicios'); if (c) c.scrollIntoView({ behavior: 'smooth' }); return; }
+    if (!st.svc) { alert('Primero elige un servicio de la carta.'); closeBook(); const c = $('#servicios'); if (c) c.scrollIntoView({ behavior: 'smooth' }); return; }
     if (st.who === null) { alert('Elige un barbero.'); return; }
     if (!st.date || !st.time) { alert('Elige el día y la hora de tu cita.'); return; }
     const n = name.value.trim();
@@ -179,7 +185,7 @@
         ${c.facebook ? `<a href="${e(c.facebook)}" target="_blank" rel="noopener" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>` : ''}
         <a href="https://wa.me/${e(PHONE)}" target="_blank" rel="noopener" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
       </div></div>
-    <div><h4>Navegación</h4><ul><li><a href="#inicio">Inicio</a></li><li><a href="#servicios">Servicios</a></li><li><a href="#agenda">Barberos</a></li><li><a href="#galeria">Galería</a></li><li><a href="#contacto">Contacto</a></li></ul></div>
+    <div><h4>Navegación</h4><ul><li><a href="#inicio">Inicio</a></li><li><a href="#servicios">Servicios</a></li><li><a href="#equipo">Equipo</a></li><li><a href="#promos">Promociones</a></li><li><a href="#galeria">Trabajos</a></li><li><a href="#contacto">Contacto</a></li></ul></div>
     <div><h4>Servicios</h4><ul>${services.slice(0, 5).map(s => `<li><a href="#servicios">${e(s.name)}</a></li>`).join('')}</ul></div>
     <div><h4>Contacto</h4><ul><li>${li('fa-solid fa-phone', c.phoneText || '')}</li><li>${li('fa-solid fa-location-dot', c.address || '')}</li></ul></div>
     <div><h4>Horario de atención</h4><p>${e(c.hours1 || '')}</p><p>${e(c.hours2 || '')}</p></div>`;
